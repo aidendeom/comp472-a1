@@ -5,7 +5,7 @@
 class Transform
 {
 private:
-
+	Vec3 localPostition;
 
 public:
 	Transform();
