@@ -16,6 +16,7 @@
     <ClInclude Include="src\simpleMath.h" />
     <ClInclude Include="src\skeleton.h" />
     <ClInclude Include="src\splitstring.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\defMesh.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="src\simpleMath.cpp" />
     <ClCompile Include="src\skeleton.cpp" />
     <ClCompile Include="src\splitstring.cpp" />
+    <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D96E1573-4447-4F75-8312-99D3F5B948D2}</ProjectGuid>
@@ -68,7 +70,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Documents\comp477-a1\comp477-a1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Documents\comp477-a1\comp477-a1\src;E:\Documents\comp477-a1\comp477-a1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
