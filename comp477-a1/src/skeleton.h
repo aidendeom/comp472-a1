@@ -16,12 +16,13 @@
 #endif
 
 #include "simpleMath.h"
-
+#include "Transform.h"
 
 
 struct Joint
 {
-    Vec3 position;
+    //Vec3 position;
+	Transform transform;
     Vec2 screenCoord;
     bool isHovered;
     bool isPicked;

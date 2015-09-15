@@ -16,10 +16,23 @@ void Skeleton::loadSkeleton(std::string skelFileName)
             splitstring splitStr(strBone);
             boneParams = splitStr.split(' ');
             Joint temp;
-            temp.position.x = std::atof(boneParams[1].c_str());
-            temp.position.y = std::atof(boneParams[2].c_str());
-            temp.position.z = std::atof(boneParams[3].c_str());
 
+			auto& t = temp.transform;
+			Vec3 pos
+			{
+				std::atof(boneParams[1].c_str()),
+				std::atof(boneParams[2].c_str()),
+				std::atof(boneParams[3].c_str())
+			};
+			t.setWorldPosition(pos);
+
+			auto parentIdx = std::atof(boneParams[4].c_str());
+
+			if (parentIdx > -1)
+			{
+				auto parent = joints[parentIdx].transform;
+				t.setParent(parent);
+			}
 
             if (std::atoi(boneParams[0].c_str()) != joints.size())
             {
@@ -62,9 +75,12 @@ void Skeleton::glDrawSkeleton()
         else
             glColor3f(0.3, 0.3, 0.3);
 
-        glTranslated(joints[i].position.x, joints[i].position.y, joints[i].position.z);
-        glutSolidSphere(0.01, 15, 15);
-        glTranslated(-joints[i].position.x, -joints[i].position.y, -joints[i].position.z);
+		auto& pos = joints[i].transform.getWorldPosition();
+
+		glPushMatrix();
+			glTranslated(pos.x, pos.y, pos.z);
+			glutSolidSphere(0.01, 15, 15);
+		glPopMatrix();
 
     }
     glPopMatrix();
@@ -84,7 +100,8 @@ void Skeleton::updateScreenCoord()
     glGetIntegerv( GL_VIEWPORT, viewport );
     for (unsigned i=0; i<joints.size(); i++)
     {
-        gluProject((GLdouble)joints[i].position.x, (GLdouble)joints[i].position.y, (GLdouble)joints[i].position.z,
+		auto& pos = joints[i].transform.getWorldPosition();
+        gluProject((GLdouble)pos.x, (GLdouble)pos.y, (GLdouble)pos.z,
                 modelview, projection, viewport,
                 &winX, &winY, &winZ );
         joints[i].screenCoord.x = winX;

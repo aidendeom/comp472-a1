@@ -276,6 +276,7 @@ void handleKeyPress(unsigned char key, int x, int y)
     {
         case 'm':
             meshModel = (meshModel+1)%3; break;
+		case 27: // ESC key
         case 'q':
             exit(0);
     }
