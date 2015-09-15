@@ -19,11 +19,11 @@ public:
 	Transform();
 	~Transform();
 
-	Transform& getParent();
-	void setParent(Transform& newParent);
+	Transform* getParent();
+	void setParent(Transform* newParent);
 
-	Vec3 getWorldPosition() const;
-	void setWorldPosition(const Vec3& pos);
+	Vec3 getWorldPosition();
+	void setWorldPosition(Vec3 pos);
 
 	std::vector<Transform*>& getChildren();
 

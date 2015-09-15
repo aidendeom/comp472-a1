@@ -21,13 +21,16 @@
 
 struct Joint
 {
-    //Vec3 position;
-	Transform transform;
+    Vec3 position;
+	int parentIdx;
+	Joint* parent;
     Vec2 screenCoord;
     bool isHovered;
     bool isPicked;
     
-    Joint()
+    Joint() :
+		parent{ nullptr },
+		parentIdx{ 0 }
     {
         isHovered = false;
         isPicked = false;
@@ -40,6 +43,8 @@ private:
     std::vector<Joint> joints;
     /*Update screen coordinates of joints*/
     void updateScreenCoord();
+	
+	void printSkeletonHierarchy();
     
 public:
     /*True if the skeleton has a joint selected*/

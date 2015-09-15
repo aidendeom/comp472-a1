@@ -1,6 +1,7 @@
 #include "skeleton.h"
 #include "splitstring.h"
 #include <cmath>
+#include <iostream>
 
 /*
  * Load skeleton file
@@ -16,31 +17,28 @@ void Skeleton::loadSkeleton(std::string skelFileName)
             splitstring splitStr(strBone);
             boneParams = splitStr.split(' ');
             Joint temp;
-
-			auto& t = temp.transform;
-			Vec3 pos
+			temp.position =
 			{
 				std::atof(boneParams[1].c_str()),
 				std::atof(boneParams[2].c_str()),
 				std::atof(boneParams[3].c_str())
 			};
-			t.setWorldPosition(pos);
 
-			auto parentIdx = std::atof(boneParams[4].c_str());
+			temp.parentIdx = std::atoi(boneParams[4].c_str());
 
-			if (parentIdx > -1)
-			{
-				auto parent = joints[parentIdx].transform;
-				t.setParent(parent);
-			}
+			// This is not working yet... I'm pointing to the wrong thing.
+			if (temp.parentIdx > -1)
+				temp.parent = &joints[temp.parentIdx];
 
-            if (std::atoi(boneParams[0].c_str()) != joints.size())
+			if (std::atoi(boneParams[0].c_str()) != joints.size())
             {
                 std::cout<<"[Warning!!!] Bone index not match\n";
             }
             joints.push_back(temp);
         }
     }
+
+	printSkeletonHierarchy();
 }
 
 /*
@@ -58,30 +56,45 @@ void Skeleton::glDrawSkeleton()
 {
     //Rigging skeleton
     glDisable(GL_DEPTH_TEST);
-    
+
     glPushMatrix();
-    glTranslatef(-0.9,-0.9,-0.9);
-	glScalef(1.8,1.8,1.8);
+	glTranslatef(-0.9f, -0.9f, -0.9f);
+	glScalef(1.8f, 1.8f, 1.8f);
 	glPointSize(6);
-	glColor3f(1,0,0);
-    updateScreenCoord();
+	glLineWidth(2.5);
+	glColor3f(1, 0, 0);
+	updateScreenCoord();
     
     for (unsigned i=0; i<joints.size(); i++)
     {
         if (joints[i].isPicked)
-            glColor3f(1.0, 0.0, 0.0);
+            glColor3f(1.0f, 0.0f, 0.0f);
         else if (joints[i].isHovered)
-            glColor3f(0.7, 0.7, 0.7);
+            glColor3f(0.7f, 0.7f, 0.7f);
         else
-            glColor3f(0.3, 0.3, 0.3);
+            glColor3f(0.3f, 0.3f, 0.3f);
 
-		auto& pos = joints[i].transform.getWorldPosition();
+		auto pos = joints[i].position;
 
 		glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);
 			glutSolidSphere(0.01, 15, 15);
 		glPopMatrix();
 
+		auto& j = joints[i];
+		auto parentIdx = j.parentIdx;
+		if (parentIdx > -1)
+		{
+			auto pos = j.position;
+			auto parentPos = joints[parentIdx].position;
+
+			glColor3f(0.3f, 0.3f, 0.3f);
+			glLineWidth(2.5);
+			glBegin(GL_LINES);
+				glVertex3d(pos.x, pos.y, pos.z);
+				glVertex3d(parentPos.x, parentPos.y, parentPos.z);
+			glEnd();
+		}
     }
     glPopMatrix();
     
@@ -100,7 +113,7 @@ void Skeleton::updateScreenCoord()
     glGetIntegerv( GL_VIEWPORT, viewport );
     for (unsigned i=0; i<joints.size(); i++)
     {
-		auto& pos = joints[i].transform.getWorldPosition();
+		auto& pos = joints[i].position;
         gluProject((GLdouble)pos.x, (GLdouble)pos.y, (GLdouble)pos.z,
                 modelview, projection, viewport,
                 &winX, &winY, &winZ );
@@ -154,3 +167,7 @@ void Skeleton::selectOrReleaseJoint()
         hasJointSelected = false;
 }
 
+
+void Skeleton::printSkeletonHierarchy()
+{
+}

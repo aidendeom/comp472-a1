@@ -15,12 +15,12 @@ Transform::~Transform()
 {
 }
 
-Transform& Transform::getParent()
+Transform* Transform::getParent()
 {
-	return *parent;
+	return parent;
 }
 
-void Transform::setParent(Transform& newParent)
+void Transform::setParent(Transform* newParent)
 {
 	using namespace std;
 
@@ -36,16 +36,16 @@ void Transform::setParent(Transform& newParent)
 	}
 
 	// Set the new parent
-	parent = &newParent;
+	parent = newParent;
 	parent->getChildren().push_back(this);
 }
 
-Vec3 Transform::getWorldPosition() const
+Vec3 Transform::getWorldPosition()
 {
 	return worldPosition;
 }
 
-void Transform::setWorldPosition(const Vec3& pos)
+void Transform::setWorldPosition(Vec3 pos)
 {
 	worldPosition = pos;
 }
