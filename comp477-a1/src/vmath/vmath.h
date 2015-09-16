@@ -127,6 +127,8 @@
 #include <sstream>
 #include <string>
 #include <cassert>
+#include <algorithm>
+
 
 #ifdef VMATH_NAMESPACE
 namespace VMATH_NAMESPACE
