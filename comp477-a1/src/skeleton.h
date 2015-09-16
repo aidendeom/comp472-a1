@@ -22,20 +22,12 @@
 
 struct Joint
 {
-    Vec3 position;
-	int parentIdx;
-	Joint* parent;
+	Transform transform;
     Vec2 screenCoord;
     bool isHovered;
     bool isPicked;
     
-    Joint() :
-		parent{ nullptr },
-		parentIdx{ 0 }
-    {
-        isHovered = false;
-        isPicked = false;
-    }
+	Joint() : isHovered{ false }, isPicked{ false } {}
 };
 
 class Skeleton

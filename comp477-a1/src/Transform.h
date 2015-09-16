@@ -7,8 +7,7 @@
 class Transform
 {
 private:
-	Vec3 worldPosition;
-
+	Vec3 localPosition;
 	Vec3 localScale;
 	Vec3 localRotation;
 
@@ -22,12 +21,14 @@ public:
 	Transform* getParent();
 	void setParent(Transform* newParent);
 
-	Vec3 getWorldPosition();
-	void setWorldPosition(Vec3 pos);
+	Vec3 getLocalPosition() const;
+	void setLocalPosition(const Vec3& pos);
+
+	Vec3 getWorldPosition() const;
+	void setWorldPosition(const Vec3& pos);
 
 	std::vector<Transform*>& getChildren();
-
-	//Vec3 worldPos();
-	//Transform& getChild(int index);
+	void addChild(Transform* child);
+	void removeChild(const Transform* child);
 };
 

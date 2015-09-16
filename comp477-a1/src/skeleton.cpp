@@ -3,6 +3,10 @@
 #include <cmath>
 #include <iostream>
 
+// uncomment to disable assert()
+// #define NDEBUG
+#include <cassert>
+
 /*
  * Load skeleton file
  */
@@ -21,18 +25,21 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 
 			joints.push_back(make_unique<Joint>());
 			auto& temp = joints.back();
+			auto& trans = temp->transform;
 
-			temp->position =
+			Vec3 worldPos
 			{
 				std::atof(boneParams[1].c_str()),
 				std::atof(boneParams[2].c_str()),
 				std::atof(boneParams[3].c_str())
 			};
 
-			temp->parentIdx = std::atoi(boneParams[4].c_str());
+			trans.setWorldPosition(worldPos);
 
-			if (temp->parentIdx > -1)
-				temp->parent = joints[temp->parentIdx].get();
+			auto parentIdx = std::atoi(boneParams[4].c_str());
+
+			if (parentIdx > -1)
+				trans.setParent(&joints[parentIdx]->transform);
 
 			if (std::atoi(boneParams[0].c_str()) + 1 != joints.size())
             {
@@ -40,8 +47,6 @@ void Skeleton::loadSkeleton(std::string skelFileName)
             }
         }
     }
-
-	printSkeletonHierarchy();
 }
 
 /*
@@ -77,18 +82,19 @@ void Skeleton::glDrawSkeleton()
         else
             glColor3f(0.3f, 0.3f, 0.3f);
 
-		auto pos = joints[i]->position;
+		auto& joint = joints[i];
+		auto& trans = joint->transform;
+
+		auto pos = trans.getWorldPosition();
 
 		glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);
 			glutSolidSphere(0.01, 15, 15);
 		glPopMatrix();
 
-		auto& j = joints[i];
-		if (j->parent != nullptr)
+		if (trans.getParent() != nullptr)
 		{
-			auto pos = j->position;
-			auto parentPos = j->parent->position;
+			auto parentPos = trans.getParent()->getWorldPosition();
 
 			glColor3f(0.3f, 0.3f, 0.3f);
 			glLineWidth(2.5);
@@ -115,7 +121,7 @@ void Skeleton::updateScreenCoord()
     glGetIntegerv( GL_VIEWPORT, viewport );
     for (unsigned i=0; i<joints.size(); i++)
     {
-		auto& pos = joints[i]->position;
+		auto& pos = joints[i]->transform.getWorldPosition();
         gluProject((GLdouble)pos.x, (GLdouble)pos.y, (GLdouble)pos.z,
                 modelview, projection, viewport,
                 &winX, &winY, &winZ );
@@ -167,9 +173,4 @@ void Skeleton::selectOrReleaseJoint()
     }
     if (!hasHovered)    //Release joint
         hasJointSelected = false;
-}
-
-
-void Skeleton::printSkeletonHierarchy()
-{
 }

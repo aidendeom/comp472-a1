@@ -44,11 +44,15 @@ struct Mat4
 
 
 //Vector operations
+bool eq3(const Vec3& a, const Vec3& b);
+
 double dot2(Vec2 a, Vec2 b);
 
 double dot3(Vec3 a, Vec3 b);
 
 double dot4(Vec4 a, Vec4 b);
 
+Vec3 add3(const Vec3& a, const Vec3& b);
 
+Vec3 sub3(const Vec3& a, const Vec3& b);
 #endif
