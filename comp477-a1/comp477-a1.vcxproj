@@ -17,6 +17,7 @@
     <ClInclude Include="src\skeleton.h" />
     <ClInclude Include="src\splitstring.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\vmath\vmath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\defMesh.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="src\skeleton.cpp" />
     <ClCompile Include="src\splitstring.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\vmath\vmath.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D96E1573-4447-4F75-8312-99D3F5B948D2}</ProjectGuid>

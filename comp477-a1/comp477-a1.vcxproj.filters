@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\vmath">
+      <UniqueIdentifier>{1523ff3e-a004-4bbf-9ffe-cd3d556b0af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\vmath">
+      <UniqueIdentifier>{e7c25f08-3049-4135-8571-e0578d9919d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\defMesh.h">
@@ -32,6 +38,9 @@
     </ClInclude>
     <ClInclude Include="src\Transform.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vmath\vmath.h">
+      <Filter>Header Files\vmath</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vmath\vmath.cpp">
+      <Filter>Source Files\vmath</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
