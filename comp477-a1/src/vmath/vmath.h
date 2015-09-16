@@ -121,6 +121,9 @@
 #ifndef __vmath_Header_File__
 #define __vmath_Header_File__
 
+#pragma warning (push)
+#pragma warning (disable: 4244)
+
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -4032,6 +4035,7 @@ namespace VMATH_NAMESPACE
 }
 #endif //VMATH_NAMESPACE
 
+#pragma warning (pop)
 
 #endif // __vmath_Header_File__
 

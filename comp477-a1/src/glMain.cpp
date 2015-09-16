@@ -316,14 +316,14 @@ void mouseEvent(int button, int state, int x, int y)
 	    break;
     case 4:         //Zoomout
         glLoadIdentity();
-        glTranslatef(0,0,-0.1);
+		glTranslatef(0.0f, 0.0f, -0.1f);
         glMultMatrixd(_matrix);
         getMatrix();
         glutPostRedisplay();
         break;
     case 3:         //Zoomin
         glLoadIdentity();
-        glTranslatef(0,0,0.1);
+        glTranslatef(0.0f,0.0f,0.1f);
         glMultMatrixd(_matrix);
         getMatrix();
         glutPostRedisplay();
@@ -362,7 +362,7 @@ void mouseMoveEvent(int x, int y)
         /* if(abs(prev_z) <= 1.0) */
 
         glLoadIdentity();
-        glTranslatef(0, 0, dy * 0.01);
+        glTranslatef(0.0f, 0.0f, dy * 0.01f);
         glMultMatrixd(_matrix);
 
         changed = true;
@@ -382,7 +382,7 @@ void mouseMoveEvent(int x, int y)
         by = _matrixI[1] * ax + _matrixI[5] * ay + _matrixI[9] * az;
         bz = _matrixI[2] * ax + _matrixI[6] * ay + _matrixI[10] * az;
 
-        glRotatef(angle, bx, by, bz);
+        glRotated(angle, bx, by, bz);
 
         changed = true;
         } else if (_mouseRight) {
@@ -391,7 +391,7 @@ void mouseMoveEvent(int x, int y)
         pos(&px, &py, &pz, x, y, viewport);
 
         glLoadIdentity();
-        glTranslatef(px - _dragPosX, py - _dragPosY, pz - _dragPosZ);
+        glTranslated(px - _dragPosX, py - _dragPosY, pz - _dragPosZ);
         glMultMatrixd(_matrix);
 
         _dragPosX = px;
@@ -426,12 +426,12 @@ void display()
 
     glColor3f(0.5,0.5,0.5);
     glPushMatrix();													//draw terrain
-    glColor3f(0.7,0.7,0.7);
+	glColor3f(0.7f, 0.7f, 0.7f);
     glBegin(GL_QUADS);
-    	glVertex3f(-3,-0.85,3);
-    	glVertex3f(3,-0.85,3);
-    	glVertex3f(3,-0.85,-3);
-    	glVertex3f(-3,-0.85,-3);
+		glVertex3f(-3.0f, -0.85f, 3.0f);
+		glVertex3f(3.0f, -0.85f, 3.0f);
+		glVertex3f(3.0f, -0.85f, -3.0f);
+		glVertex3f(-3.0f, -0.85f, -3.0f);
     glEnd();
 	glPopMatrix();
 
