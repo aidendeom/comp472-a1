@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <memory>
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -40,7 +41,7 @@ struct Joint
 class Skeleton
 {
 private:
-    std::vector<Joint> joints;
+    std::vector<std::unique_ptr<Joint>> joints;
     /*Update screen coordinates of joints*/
     void updateScreenCoord();
 	
