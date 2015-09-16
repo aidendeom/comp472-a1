@@ -27,21 +27,21 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 			auto& temp = joints.back();
 			auto& trans = temp->transform;
 
-			Vec3 worldPos
+			Vector3f worldPos
 			{
-				std::atof(boneParams[1].c_str()),
-				std::atof(boneParams[2].c_str()),
-				std::atof(boneParams[3].c_str())
+				std::stof(boneParams[1]),
+				std::stof(boneParams[2]),
+				std::stof(boneParams[3])
 			};
 
 			trans.setWorldPosition(worldPos);
 
-			auto parentIdx = std::atoi(boneParams[4].c_str());
+			auto parentIdx = std::stoi(boneParams[4]);
 
 			if (parentIdx > -1)
 				trans.setParent(&joints[parentIdx]->transform);
 
-			if (std::atoi(boneParams[0].c_str()) + 1 != joints.size())
+			if (std::stoi(boneParams[0]) + 1 != joints.size())
             {
                 std::cout<<"[Warning!!!] Bone index not match\n";
             }

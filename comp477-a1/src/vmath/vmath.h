@@ -945,7 +945,10 @@ public:
 	 */
 	bool operator==(const Vector3<T>& rhs) const
 	{
-		return std::fabs(x - rhs.x) < EPSILON && std::fabs(y - rhs.y) < EPSILON && std::fabs(z - rhs.z) < EPSILON;
+		// Cast to long double in order to avoid ambiguity when passing an int
+		return std::abs(x - rhs.x) < EPSILON
+			&& std::abs(y - rhs.y) < EPSILON
+			&& std::abs(z - rhs.z) < EPSILON;
 	}
 
 	/**
@@ -1378,8 +1381,10 @@ public:
 	 */
 	bool operator==(const Vector4<T>& rhs) const
 	{
-		return std::fabs(x - rhs.x) < EPSILON && std::fabs(y - rhs.y) < EPSILON && std::fabs(z - rhs.z) < EPSILON
-				&& std::fabs(w - rhs.w) < EPSILON;
+		return std::abs(x - rhs.x) < EPSILON
+			&& std::abs(y - rhs.y) < EPSILON
+			&& std::abs(z - rhs.z) < EPSILON
+			&& std::abs(w - rhs.w) < EPSILON;
 	}
 
 	/**
@@ -1775,7 +1780,7 @@ public:
 	{
 		for (int i = 0; i < 9; i++)
 		{
-			if (std::fabs(data[i] - rhs.data[i]) >= EPSILON)
+			if (std::abs(data[i] - rhs.data[i]) >= EPSILON)
 				return false;
 		}
 		return true;
@@ -2455,7 +2460,7 @@ public:
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			if (std::fabs(data[i] - rhs.data[i]) >= EPSILON
+			if (std::abs(data[i] - rhs.data[i]) >= EPSILON
 				)
 				return false;
 		}
@@ -3125,7 +3130,7 @@ public:
 	bool operator==(const Quaternion<T>& rhs) const
 	{
 		const Quaternion<T>& lhs = *this;
-		return (std::fabs(lhs.w - rhs.w) < EPSILON) && lhs.v == rhs.v;
+		return (std::abs(lhs.w - rhs.w) < EPSILON) && lhs.v == rhs.v;
 	}
 
 	/**

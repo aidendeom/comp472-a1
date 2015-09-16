@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include "simpleMath.h"
-
 Transform::Transform() :
 localPosition{ 0, 0, 0 },
 localScale{ 0, 0, 0 },
@@ -38,24 +36,24 @@ void Transform::setParent(Transform* newParent)
 	setWorldPosition(worldPos);
 }
 
-Vec3 Transform::getLocalPosition() const
+Vector3f Transform::getLocalPosition() const
 {
 	return localPosition;
 }
 
-void Transform::setLocalPosition(const Vec3& pos)
+void Transform::setLocalPosition(const Vector3f& pos)
 {
 	localPosition = pos;
 }
 
-Vec3 Transform::getWorldPosition() const
+Vector3f Transform::getWorldPosition() const
 {
-	auto parentWorldPos = parent == nullptr ? Vec3{ 0, 0, 0 } : parent->getWorldPosition();
+	auto parentWorldPos = parent == nullptr ? Vector3f{ 0, 0, 0 } : parent->getWorldPosition();
 
-	return add3(parentWorldPos, localPosition);
+	return parentWorldPos + localPosition;
 }
 
-void Transform::setWorldPosition(const Vec3& pos)
+void Transform::setWorldPosition(const Vector3f& pos)
 {
 	if (parent == nullptr)
 	{
@@ -64,7 +62,7 @@ void Transform::setWorldPosition(const Vec3& pos)
 	else
 	{
 		auto parentWorldPos = parent->getWorldPosition();
-		localPosition = sub3(pos, parentWorldPos);
+		localPosition = pos - parentWorldPos;
 	}
 }
 

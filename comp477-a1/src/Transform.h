@@ -2,14 +2,14 @@
 
 #include <vector>
 
-#include "simpleMath.h"
+#include "vmath/vmath.h"
 
 class Transform
 {
 private:
-	Vec3 localPosition;
-	Vec3 localScale;
-	Vec3 localRotation;
+	Vector3f localPosition;
+	Vector3f localScale;
+	Vector3f localRotation;
 
 	Transform* parent;
 	std::vector<Transform*> children;
@@ -21,11 +21,11 @@ public:
 	Transform* getParent();
 	void setParent(Transform* newParent);
 
-	Vec3 getLocalPosition() const;
-	void setLocalPosition(const Vec3& pos);
+	Vector3f getLocalPosition() const;
+	void setLocalPosition(const Vector3f& pos);
 
-	Vec3 getWorldPosition() const;
-	void setWorldPosition(const Vec3& pos);
+	Vector3f getWorldPosition() const;
+	void setWorldPosition(const Vector3f& pos);
 
 	std::vector<Transform*>& getChildren();
 	void addChild(Transform* child);
