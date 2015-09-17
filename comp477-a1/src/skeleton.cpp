@@ -182,3 +182,13 @@ void Skeleton::selectOrReleaseJoint()
     if (!hasHovered)    //Release joint
         hasJointSelected = false;
 }
+
+Joint* Skeleton::getSelectedJoint()
+{
+	auto selected = find_if(begin(joints), end(joints), [](unique_ptr<Joint>& j) { return j->isPicked; });
+
+	if (selected != end(joints))
+		return selected->get();
+
+	return nullptr;
+}

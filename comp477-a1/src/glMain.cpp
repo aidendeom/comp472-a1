@@ -56,6 +56,14 @@ double vlen(double x, double y, double z)
     return sqrt(x * x + y * y + z * z);
 }
 
+float getAngle(const Vector2f& a, const Vector2f& b)
+{
+	auto dotprod = a.x * b.x + a.y * b.y;
+	auto lenprod = a.length() * b.length();
+
+	return cos(dotprod / lenprod);
+}
+
 void invertMatrix(const GLdouble * m, GLdouble * out)
 {
 
@@ -343,62 +351,62 @@ void mousePassiveFunc(int x, int y)
 }
 void mouseMoveEvent(int x, int y)
 {
+	const int dx = x - _mouseX;
+	const int dy = y - _mouseY;
+
+	int viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
     if (!myDefMesh.mySkeleton.hasJointSelected)
     {
         bool changed = false;
-
-        const int dx = x - _mouseX;
-        const int dy = y - _mouseY;
-
-        int viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
 
         if (dx == 0 && dy == 0)
             return;
 
         if (_mouseMiddle || (_mouseLeft && _mouseRight)) {
-        /* double s = exp((double)dy*0.01); */
-        /* glScalef(s,s,s); */
-        /* if(abs(prev_z) <= 1.0) */
+			/* double s = exp((double)dy*0.01); */
+			/* glScalef(s,s,s); */
+			/* if(abs(prev_z) <= 1.0) */
 
-        glLoadIdentity();
-        glTranslatef(0.0f, 0.0f, dy * 0.01f);
-        glMultMatrixd(_matrix);
+			glLoadIdentity();
+			glTranslatef(0.0f, 0.0f, dy * 0.01f);
+			glMultMatrixd(_matrix);
 
-        changed = true;
+			changed = true;
         } else if (_mouseLeft) {
-        double ax, ay, az;
-        double bx, by, bz;
-        double angle;
+			double ax, ay, az;
+			double bx, by, bz;
+			double angle;
 
-        ax = dy;
-        ay = dx;
-        az = 0.0;
-        angle = vlen(ax, ay, az) / (double) (viewport[2] + 1) * 180.0;
+			ax = dy;
+			ay = dx;
+			az = 0.0;
+			angle = vlen(ax, ay, az) / (double) (viewport[2] + 1) * 180.0;
 
-        /* Use inverse matrix to determine local axis of rotation */
+			/* Use inverse matrix to determine local axis of rotation */
 
-        bx = _matrixI[0] * ax + _matrixI[4] * ay + _matrixI[8] * az;
-        by = _matrixI[1] * ax + _matrixI[5] * ay + _matrixI[9] * az;
-        bz = _matrixI[2] * ax + _matrixI[6] * ay + _matrixI[10] * az;
+			bx = _matrixI[0] * ax + _matrixI[4] * ay + _matrixI[8] * az;
+			by = _matrixI[1] * ax + _matrixI[5] * ay + _matrixI[9] * az;
+			bz = _matrixI[2] * ax + _matrixI[6] * ay + _matrixI[10] * az;
 
-        glRotated(angle, bx, by, bz);
+			glRotated(angle, bx, by, bz);
 
-        changed = true;
+			changed = true;
         } else if (_mouseRight) {
-        double px, py, pz;
+			double px, py, pz;
 
-        pos(&px, &py, &pz, x, y, viewport);
+			pos(&px, &py, &pz, x, y, viewport);
 
-        glLoadIdentity();
-        glTranslated(px - _dragPosX, py - _dragPosY, pz - _dragPosZ);
-        glMultMatrixd(_matrix);
+			glLoadIdentity();
+			glTranslated(px - _dragPosX, py - _dragPosY, pz - _dragPosZ);
+			glMultMatrixd(_matrix);
 
-        _dragPosX = px;
-        _dragPosY = py;
-        _dragPosZ = pz;
+			_dragPosX = px;
+			_dragPosY = py;
+			_dragPosZ = pz;
 
-        changed = true;
+			changed = true;
         }
 
         _mouseX = x;
@@ -414,15 +422,35 @@ void mouseMoveEvent(int x, int y)
      */
     else    
     {
+		Joint* selectedJoint = myDefMesh.mySkeleton.getSelectedJoint();
+
+		// Leave if there is no selected joint or if it is the root
+		// Might be fun to translate the model if the root is selected
+		if (selectedJoint == nullptr || selectedJoint->transform.getParent() == nullptr)
+			return;
+
+		auto& j = *selectedJoint;
+		auto& p = *j.transform.getParent()->getJoint();
+		
+		Vector2f v1 = j.screenCoord - p.screenCoord;
+		Vector2f v2 = Vector2i{ x, y } - p.screenCoord;
+
+		float angle = getAngle(v1, v2);
+
+		double px, py, pz;
+		pos(&px, &py, &pz, x, y, viewport);
+
+		j.transform.setLocalPosition(Vector3f{ (float)px, (float)py, (float)pz });
     }
 }
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
     glLoadIdentity();
-    glMultMatrixd(_matrix);
+	glMultMatrixd(_matrix);
 
     glColor3f(0.5,0.5,0.5);
     glPushMatrix();													//draw terrain

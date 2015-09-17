@@ -22,7 +22,7 @@
 struct Joint
 {
 	Transform transform;
-    Vec2 screenCoord;
+    Vector2i screenCoord;
     bool isHovered;
     bool isPicked;
     
@@ -72,6 +72,8 @@ public:
     void release();
     
     void selectOrReleaseJoint();
+
+	Joint* getSelectedJoint();
 };
 
 #endif

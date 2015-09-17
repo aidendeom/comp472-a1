@@ -10,7 +10,9 @@ class Transform
 {
 private:
 	Vector3f localPosition;
+public:
 	Quatf localRotation;
+private:
 	Vector3f localScale;
 
 	Transform* parent;
