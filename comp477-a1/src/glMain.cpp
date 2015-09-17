@@ -440,7 +440,10 @@ void mouseMoveEvent(int x, int y)
 		double px, py, pz;
 		pos(&px, &py, &pz, x, y, viewport);
 
-		j.transform.setLocalPosition(Vector3f{ (float)px, (float)py, (float)pz });
+		auto currentAngle = p.transform.getLocalRotation().w;
+		Quatf rotation{ currentAngle + angle, 0, 0, 1 };
+
+		p.transform.setLocalRotation(rotation);
     }
 }
 

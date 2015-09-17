@@ -47,6 +47,16 @@ void Transform::setLocalPosition(const Vector3f& pos)
 	localPosition = pos;
 }
 
+Quatf Transform::getLocalRotation() const
+{
+	return localRotation;
+}
+
+void Transform::setLocalRotation(const Quatf& rot)
+{
+	localRotation = rot;
+}
+
 Vector3f Transform::getWorldPosition() const
 {
 	auto parentWorldPos = parent == nullptr ? Vector3f{ 0, 0, 0 } : parent->getWorldPosition();

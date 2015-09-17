@@ -10,9 +10,7 @@ class Transform
 {
 private:
 	Vector3f localPosition;
-public:
 	Quatf localRotation;
-private:
 	Vector3f localScale;
 
 	Transform* parent;
@@ -29,6 +27,9 @@ public:
 
 	Vector3f getLocalPosition() const;
 	void setLocalPosition(const Vector3f& pos);
+
+	Quatf getLocalRotation() const;
+	void setLocalRotation(const Quatf& rot);
 
 	Vector3f getWorldPosition() const;
 	void setWorldPosition(const Vector3f& pos);

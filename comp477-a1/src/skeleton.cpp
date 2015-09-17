@@ -93,7 +93,13 @@ void Skeleton::glDrawTransformHierarchy(Joint& root)
 
 	auto& pos = root.transform.getLocalPosition();
 
+	// Apply local translation
 	glTranslatef(pos.x, pos.y, pos.z);
+
+	// Apply local rotation
+	auto rot = root.transform.getLocalRotation();
+	glRotatef(rot.w, rot.v.x, rot.v.y, rot.v.z);
+
 	glutSolidSphere(0.01, 15, 15);
 
 	// Draw bone towards parent
