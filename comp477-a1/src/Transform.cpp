@@ -6,7 +6,8 @@ Transform::Transform() :
 localPosition{ 0, 0, 0 },
 localScale{ 0, 0, 0 },
 localRotation{ 0, 0, 0 },
-parent{ nullptr }
+parent{ nullptr },
+containingJoint{ nullptr }
 {
 }
 
@@ -75,7 +76,8 @@ void Transform::addChild(Transform* child)
 {
 	using namespace std;
 
-	if (find(begin(children), end(children), child) != end(children))
+	// Ensure the child is not already in the list
+	if (find(begin(children), end(children), child) == end(children))
 		children.push_back(child);
 
 }
@@ -85,4 +87,14 @@ void Transform::removeChild(const Transform* child)
 	using namespace std;
 
 	children.erase( remove(begin(children), end(children), child), end(children) );
+}
+
+Joint* Transform::getJoint()
+{
+	return containingJoint;
+}
+
+void Transform::setJoint(Joint* newJoint)
+{
+	containingJoint = newJoint;
 }

@@ -73,41 +73,80 @@ void Skeleton::glDrawSkeleton()
 	glColor3f(1, 0, 0);
 	updateScreenCoord();
     
-    for (unsigned i=0; i<joints.size(); i++)
-    {
-        if (joints[i]->isPicked)
-            glColor3f(1.0f, 0.0f, 0.0f);
-        else if (joints[i]->isHovered)
-            glColor3f(0.7f, 0.7f, 0.7f);
-        else
-            glColor3f(0.3f, 0.3f, 0.3f);
+	glDrawTransformHierarchy(*joints[0].get());
 
-		auto& joint = joints[i];
-		auto& trans = joint->transform;
+  //  for (unsigned i=0; i<joints.size(); i++)
+  //  {
+  //      if (joints[i]->isPicked)
+  //          glColor3f(1.0f, 0.0f, 0.0f);
+  //      else if (joints[i]->isHovered)
+  //          glColor3f(0.7f, 0.7f, 0.7f);
+  //      else
+  //          glColor3f(0.3f, 0.3f, 0.3f);
 
-		auto pos = trans.getWorldPosition();
+		//auto& joint = joints[i];
+		//auto& trans = joint->transform;
 
-		glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);
-			glutSolidSphere(0.01, 15, 15);
-		glPopMatrix();
+		//auto pos = trans.getWorldPosition();
 
-		if (trans.getParent() != nullptr)
-		{
-			auto parentPos = trans.getParent()->getWorldPosition();
+		//glPushMatrix();
+		//	glTranslated(pos.x, pos.y, pos.z);
+		//	glutSolidSphere(0.01, 15, 15);
+		//glPopMatrix();
 
-			glColor3f(0.3f, 0.3f, 0.3f);
-			glLineWidth(2.5);
-			glBegin(GL_LINES);
-				glVertex3d(pos.x, pos.y, pos.z);
-				glVertex3d(parentPos.x, parentPos.y, parentPos.z);
-			glEnd();
-		}
-    }
+		//if (trans.getParent() != nullptr)
+		//{
+		//	auto parentPos = trans.getParent()->getWorldPosition();
+
+		//	glColor3f(0.3f, 0.3f, 0.3f);
+		//	glLineWidth(2.5);
+		//	glBegin(GL_LINES);
+		//		glVertex3d(pos.x, pos.y, pos.z);
+		//		glVertex3d(parentPos.x, parentPos.y, parentPos.z);
+		//	glEnd();
+		//}
+  //  }
     glPopMatrix();
     
     glEnable(GL_DEPTH_TEST);
 }
+
+void Skeleton::glDrawTransformHierarchy(Joint& root)
+{
+	glPushMatrix();
+
+	if (root.isPicked)
+	    glColor3f(1.0f, 0.0f, 0.0f);
+	else if (root.isHovered)
+	    glColor3f(0.7f, 0.7f, 0.7f);
+	else
+	    glColor3f(0.3f, 0.3f, 0.3f);
+
+	auto& pos = root.transform.getLocalPosition();
+
+	glTranslatef(pos.x, pos.y, pos.z);
+	glutSolidSphere(0.01, 15, 15);
+
+	// Draw bone towards parent
+	if (root.transform.getParent() != nullptr)
+	{
+		glColor3f(0.3f, 0.3f, 0.3f);
+		glLineWidth(2.5);
+		glBegin(GL_LINES);
+			glVertex3i(0, 0, 0);
+			glVertex3f(-pos.x, -pos.y, -pos.z);
+		glEnd();
+	}
+
+	for (auto c : root.transform.getChildren())
+	{
+		glDrawTransformHierarchy(*c->getJoint());
+	}
+
+	glPopMatrix();
+}
+
+
 
 void Skeleton::updateScreenCoord()
 {

@@ -19,7 +19,6 @@
 #include "simpleMath.h"
 #include "Transform.h"
 
-
 struct Joint
 {
 	Transform transform;
@@ -27,7 +26,12 @@ struct Joint
     bool isHovered;
     bool isPicked;
     
-	Joint() : isHovered{ false }, isPicked{ false } {}
+	Joint() :
+		isHovered{ false },
+		isPicked{ false }
+	{
+		transform.setJoint(this);
+	}
 };
 
 class Skeleton
@@ -57,6 +61,8 @@ public:
      * Draw skeleton with OpenGL
      */
     void glDrawSkeleton();
+
+	void glDrawTransformHierarchy(Joint& root);
 
     /*
      * Check if any joint is hovered by given mouse coordinate

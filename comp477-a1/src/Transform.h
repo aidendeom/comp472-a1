@@ -4,6 +4,8 @@
 
 #include "vmath/vmath.h"
 
+struct Joint;
+
 class Transform
 {
 private:
@@ -13,6 +15,8 @@ private:
 
 	Transform* parent;
 	std::vector<Transform*> children;
+
+	Joint* containingJoint;
 
 public:
 	Transform();
@@ -30,5 +34,8 @@ public:
 	std::vector<Transform*>& getChildren();
 	void addChild(Transform* child);
 	void removeChild(const Transform* child);
+
+	Joint* getJoint();
+	void setJoint(Joint* newJoint);
 };
 
