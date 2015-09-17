@@ -4,8 +4,8 @@
 
 Transform::Transform() :
 localPosition{ 0, 0, 0 },
-localScale{ 0, 0, 0 },
-localRotation{ 0, 0, 0 },
+localRotation{ 1, 0, 0, 0 },
+localScale{ 1, 1, 1 },
 parent{ nullptr },
 containingJoint{ nullptr }
 {

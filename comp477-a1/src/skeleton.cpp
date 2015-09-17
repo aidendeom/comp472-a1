@@ -75,37 +75,6 @@ void Skeleton::glDrawSkeleton()
     
 	glDrawTransformHierarchy(*joints[0].get());
 
-  //  for (unsigned i=0; i<joints.size(); i++)
-  //  {
-  //      if (joints[i]->isPicked)
-  //          glColor3f(1.0f, 0.0f, 0.0f);
-  //      else if (joints[i]->isHovered)
-  //          glColor3f(0.7f, 0.7f, 0.7f);
-  //      else
-  //          glColor3f(0.3f, 0.3f, 0.3f);
-
-		//auto& joint = joints[i];
-		//auto& trans = joint->transform;
-
-		//auto pos = trans.getWorldPosition();
-
-		//glPushMatrix();
-		//	glTranslated(pos.x, pos.y, pos.z);
-		//	glutSolidSphere(0.01, 15, 15);
-		//glPopMatrix();
-
-		//if (trans.getParent() != nullptr)
-		//{
-		//	auto parentPos = trans.getParent()->getWorldPosition();
-
-		//	glColor3f(0.3f, 0.3f, 0.3f);
-		//	glLineWidth(2.5);
-		//	glBegin(GL_LINES);
-		//		glVertex3d(pos.x, pos.y, pos.z);
-		//		glVertex3d(parentPos.x, parentPos.y, parentPos.z);
-		//	glEnd();
-		//}
-  //  }
     glPopMatrix();
     
     glEnable(GL_DEPTH_TEST);

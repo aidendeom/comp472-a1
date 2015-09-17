@@ -10,8 +10,8 @@ class Transform
 {
 private:
 	Vector3f localPosition;
+	Quatf localRotation;
 	Vector3f localScale;
-	Vector3f localRotation;
 
 	Transform* parent;
 	std::vector<Transform*> children;
