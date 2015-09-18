@@ -51,7 +51,7 @@ Vector3f Transform::getWorldPosition() const
 {
 	auto parentWorldPos = parent == nullptr ? Vector3f{ 0, 0, 0 } : parent->getWorldPosition();
 
-	return parentWorldPos + localPosition;
+	return getWorldRotation().transform() * (parentWorldPos + localPosition);
 }
 
 void Transform::setWorldPosition(const Vector3f& pos)

@@ -573,6 +573,14 @@ public:
 		oss << *this;
 		return oss.str();
 	}
+
+	//-------------[ static functions ]------------------------
+	
+	static T dot(const Vector2<T>& a, const Vector2<T>& b)
+	{
+		return (a.x * b.x)
+			+ (a.y * b.y);
+	}
 };
 
 //--------------------------------------

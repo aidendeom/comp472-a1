@@ -56,12 +56,18 @@ double vlen(double x, double y, double z)
     return sqrt(x * x + y * y + z * z);
 }
 
-float getAngle(const Vector2f& a, const Vector2f& b)
+float getAngle(Vector2f v1, Vector2f v2)
 {
-	auto dotprod = a.x * b.x + a.y * b.y;
-	auto lenprod = a.length() * b.length();
+	v1.normalize();
+	v2.normalize();
 
-	return cos(dotprod / lenprod);
+	auto angle = std::acosf(Vector2f::dot(v1, v2));
+	auto orientation = (v1.x * v2.y) - (v2.x * v1.y);
+
+	if (orientation < 0)
+		angle = -angle;
+
+	return angle;
 }
 
 void invertMatrix(const GLdouble * m, GLdouble * out)
@@ -431,9 +437,10 @@ void mouseMoveEvent(int x, int y)
 
 		auto& j = *selectedJoint;
 		auto& p = *j.transform.getParent()->getJoint();
-		
-		Vector2f v1 = j.screenCoord - p.screenCoord;
-		Vector2f v2 = Vector2i{ x, y } - p.screenCoord;
+
+		Vector2i mousePos{ x, y };
+		Vector2f v1 = mousePos - j.screenCoord;
+		Vector2f v2 = j.screenCoord - p.screenCoord;
 
 		float angle = getAngle(v1, v2);
 
@@ -450,7 +457,7 @@ void mouseMoveEvent(int x, int y)
 		Quatf result = rot * selectedPos * ~rot;
 
 		j.transform.setLocalPosition(result.v);
-		j.transform.setLocalRotation(rot);
+		j.transform.setLocalRotation(rot * j.transform.getLocalRotation());
     }
 }
 
