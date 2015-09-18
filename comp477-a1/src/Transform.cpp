@@ -75,6 +75,7 @@ Quatf Transform::getLocalRotation() const
 void Transform::setLocalRotation(const Quatf& rot)
 {
 	localRotation = rot;
+	localRotation.normalize();
 }
 
 Quatf Transform::getWorldRotation() const

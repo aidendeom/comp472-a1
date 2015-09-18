@@ -3219,6 +3219,7 @@ public:
 	 */
 	static Quaternion<T> fromAxisRot(Vector3<T> axis, float angleDeg)
 	{
+		axis.normalize();
 		double angleRad = DEG2RAD(angleDeg);
 		double sa2 = std::sin(angleRad / 2);
 		double ca2 = std::cos(angleRad / 2);

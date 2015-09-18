@@ -86,7 +86,9 @@ void Skeleton::glDrawTransformHierarchy(Joint& root)
 
 	auto& pos = root.transform.getLocalPosition();
 
-	// Draw bone towards parent
+	// Draw bone from child to parent.
+	// The coordinate system has not yet been
+	// changed, so [0,0,0] is still the parent's position
 	if (root.transform.getParent() != nullptr)
 	{
 		glColor3f(0.3f, 0.3f, 0.3f);
@@ -106,8 +108,9 @@ void Skeleton::glDrawTransformHierarchy(Joint& root)
 	glTranslatef(pos.x, pos.y, pos.z);
 
 	// Apply local rotation
-	auto rot = root.transform.getLocalRotation();
-	glRotatef(rot.w, rot.v.x, rot.v.y, rot.v.z);
+	auto rot = root.transform.getLocalRotation().transform();
+	glMultMatrixf(rot);
+	//glRotatef(rot.w, rot.v.x, rot.v.y, rot.v.z);
 
 	glutSolidSphere(0.01, 15, 15);
 

@@ -440,10 +440,17 @@ void mouseMoveEvent(int x, int y)
 		double px, py, pz;
 		pos(&px, &py, &pz, x, y, viewport);
 
-		auto currentAngle = p.transform.getLocalRotation().w;
-		Quatf rotation{ currentAngle + angle, 0, 0, 1 };
+		auto currentAngle = j.transform.getLocalRotation().w;
 
-		p.transform.setLocalRotation(rotation);
+		
+		Quatf selectedPos{ 0, j.transform.getLocalPosition() };
+		Quatf rot = Quatf::fromAxisRot({ 0, 0, 1 }, angle);
+		//-----------------------------^  Set this to the correct axis
+		//								  i.e. eye direction of the camera
+		Quatf result = rot * selectedPos * ~rot;
+
+		j.transform.setLocalPosition(result.v);
+		j.transform.setLocalRotation(rot);
     }
 }
 
@@ -475,9 +482,13 @@ void display()
     glutSwapBuffers();
 }
 
-int main(int argc, char **argv)
-{
+#define _USE_MATH_DEFINES
+#include <math.h>
 
+#define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
+
+int main(int argc, char **argv)
+{	
     glutInit(&argc, argv);
     //Print contex info
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);	//double buffer
