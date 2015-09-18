@@ -497,6 +497,13 @@ public:
 		y /= s;
 	}
 
+	Vector2<T> normalized() const
+	{
+		Vector2<T> v{ *this };
+		v.normalize();
+		return v;
+	}
+
 	/**
 	 * Return square of length.
 	 * @return length ^ 2
@@ -1007,6 +1014,13 @@ public:
 		x /= s;
 		y /= s;
 		z /= s;
+	}
+
+	Vector3<T> normalized() const
+	{
+		Vector3<T> v{ *this };
+		v.normalize();
+		return v;
 	}
 
 	//------------[ other operations ]---------------------------
@@ -1522,6 +1536,13 @@ public:
 		y /= s;
 		z /= s;
 		w /= s;
+	}
+
+	Vector4<T> normalized() const
+	{
+		Vector4<T> v{ *this };
+		v.normalize();
+		return v;
 	}
 
 	/**
@@ -3196,6 +3217,17 @@ public:
 		T len = length();
 		w /= len;
 		v /= len;
+	}
+
+	/**
+	* Returns a normalized version of this quaternion
+	* @return Normalized copy of this Quaternion
+	*/
+	Quaternion<T> normalized() const
+	{
+		Quaternion<T> q{ *this };
+		q.normalize();
+		return q;
 	}
 
 	/**

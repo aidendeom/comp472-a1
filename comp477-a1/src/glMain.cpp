@@ -488,7 +488,7 @@ void display()
 #define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
 
 int main(int argc, char **argv)
-{	
+{
     glutInit(&argc, argv);
     //Print contex info
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);	//double buffer
