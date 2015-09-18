@@ -31,6 +31,9 @@ public:
 	Quatf getLocalRotation() const;
 	void setLocalRotation(const Quatf& rot);
 
+	Quatf getWorldRotation() const;
+	void setWorldRotation(const Quatf& rot);
+
 	Vector3f getWorldPosition() const;
 	void setWorldPosition(const Vector3f& pos);
 
