@@ -42,11 +42,16 @@ private:
     void updateScreenCoord();
 	
 	void printSkeletonHierarchy();
+
+	size_t numJoints;
     
 public:
     /*True if the skeleton has a joint selected*/
     bool hasJointSelected;   
-    Skeleton(){hasJointSelected = false;};
+    Skeleton() : 
+		numJoints{ 0 },
+		hasJointSelected{ false }
+	{};
     /*
      * Load Skeleton file
      */

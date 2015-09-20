@@ -7,9 +7,9 @@ localPosition{ 0, 0, 0 },
 localRotation{ 1, 0, 0, 0 },
 localScale{ 1, 1, 1 },
 parent{ nullptr },
-containingJoint{ nullptr }
-{
-}
+containingJoint{ nullptr },
+numChildren{ 0 }
+{}
 
 
 Transform::~Transform()
@@ -49,21 +49,13 @@ void Transform::setLocalPosition(const Vector3f& pos)
 
 Vector3f Transform::getWorldPosition() const
 {
+	auto parentWorldRot = parent == nullptr ? Quatf{ 1, 0, 0, 0 } : parent->getWorldRotation();
 	auto parentWorldPos = parent == nullptr ? Vector3f{ 0, 0, 0 } : parent->getWorldPosition();
 
-	return parentWorldPos + localPosition;
+	auto pos = localPosition;
+	pos = parentWorldRot.rotatePoint(pos);
 
-	//auto len2 = localRotation.lengthSq();
-	//auto conjRot = ~localRotation;
-
-	//Quatf invRot{ conjRot.w / len2, conjRot.v / len2 };
-	//invRot.normalize();
-
-	//Quatf pos{ 0, localPosition };
-
-	//auto newPos = invRot * pos * ~invRot;
-
-	//return parentWorldPos + newPos.v;
+	return parentWorldPos + pos;
 }
 
 void Transform::setWorldPosition(const Vector3f& pos)
@@ -94,7 +86,7 @@ Quatf Transform::getWorldRotation() const
 {
 	auto parentWorldRot = parent == nullptr ? Quatf{ 1, 0, 0, 0 } : parent->getWorldRotation();
 
-	return parentWorldRot * localRotation;
+	return localRotation * parentWorldRot ;
 }
 
 void Transform::setWorldRotation(const Quatf& rot)

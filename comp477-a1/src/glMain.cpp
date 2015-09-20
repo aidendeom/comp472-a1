@@ -465,9 +465,30 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
     glLoadIdentity();
 	glMultMatrixd(_matrix);
+
+	// Drawing reference coord system
+	const int length = 3;
+	const GLfloat r[]{ 1, 0, 0, 1 };
+	const GLfloat g[]{ 0, 1, 0, 1 };
+	const GLfloat b[]{ 0, 0, 1, 1 };
+
+	glLineWidth(5);
+	glBegin(GL_LINES);
+		glColor4fv(r);
+		glVertex3i(0, 0, 0);
+		glVertex3i(length, 0, 0);
+
+		glColor4fv(g);
+		glVertex3i(0, 0, 0);
+		glVertex3i(0, length, 0);
+
+		glColor4fv(b);
+		glVertex3i(0, 0, 0);
+		glVertex3i(0, 0, length);
+	glEnd();
+
 
     glColor3f(0.5,0.5,0.5);
     glPushMatrix();													//draw terrain
@@ -494,10 +515,18 @@ void display()
 
 #define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
 
+void pr(Quatf q)			{ cout << q << endl; }
+void pr(Vector3f v)			{ cout << v << endl; }
+void pr()					{ cout << endl; }
+void pr(const char* str)	{ cout << str << endl; }
+
+typedef Vector3f v;
+typedef Quatf q;
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    //Print contex info
+    //Print context info
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);	//double buffer
     glutInitWindowSize(width, height);
     glutInitWindowPosition(0, 0);

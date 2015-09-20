@@ -46,6 +46,13 @@ void Skeleton::loadSkeleton(std::string skelFileName)
                 std::cout<<"[Warning!!!] Bone index not match\n";
             }
         }
+
+		numJoints = joints.size();
+
+		for (auto& j : joints)
+		{
+			j->transform.updateNumChildren();
+		}
     }
 }
 
@@ -73,6 +80,9 @@ void Skeleton::glDrawSkeleton()
 	glColor3f(1, 0, 0);
 	updateScreenCoord();
     
+	if (joints.size() != numJoints)
+		cout << "num joints changed" << endl;
+
 	glDrawTransformHierarchy(*joints[0].get());
 
     glPopMatrix();
@@ -82,6 +92,9 @@ void Skeleton::glDrawSkeleton()
 
 void Skeleton::glDrawTransformHierarchy(Joint& root)
 {
+	if (!root.transform.checkNumChildren())
+		cout << "num children changed!" << endl;
+
 	glPushMatrix();
 
 	auto& pos = root.transform.getLocalPosition();

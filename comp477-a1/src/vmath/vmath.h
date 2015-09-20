@@ -1113,6 +1113,7 @@ public:
 		oss << *this;
 		return oss.str();
 	}
+
 };
 
 /// Three dimensional Vector of floats
@@ -3259,11 +3260,11 @@ public:
 	 */
 	static Quaternion<T> fromAxisRot(Vector3<T> axis, float angleDeg)
 	{
-		axis.normalize();
 		double angleRad = DEG2RAD(angleDeg);
 		double sa2 = std::sin(angleRad / 2);
 		double ca2 = std::cos(angleRad / 2);
-		return Quaternion<T>(ca2, axis * sa2);
+		auto q = Quaternion<T>(ca2, axis * sa2);
+		return q.normalized();
 	}
 
 	/**
@@ -3546,6 +3547,34 @@ public:
 			}
 		}
 		return ret;
+	}
+
+	Vector3<T> rotatePoint(const Vector3<T>& v)
+	{
+		return rotatePoint(Quaternion<T>{0, v});
+	}
+
+	Vector3<T> rotatePoint(const Quaternion<T>& q)
+	{
+		auto& rot = *this;
+
+		auto result = rot * q * ~rot;
+
+		return result.v;
+	}
+
+	void invert()
+	{
+		normalize();
+		v = -v;
+	};
+
+	Quaternion<T> inverted() const
+	{
+		Quaternion<T> q = *this;
+		q.invert();
+
+		return q;
 	}
 
 };

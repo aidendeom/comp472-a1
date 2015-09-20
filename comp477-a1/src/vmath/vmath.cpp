@@ -58,6 +58,7 @@ template class Quaternion<double>;
 template class Aabb3<float>;
 template class Aabb3<double>;
 
+
 #ifdef VMATH_NAMESPACE
 }
 #endif

@@ -18,6 +18,8 @@ private:
 
 	Joint* containingJoint;
 
+	size_t numChildren;
+
 public:
 	Transform();
 	~Transform();
@@ -43,5 +45,15 @@ public:
 
 	Joint* getJoint();
 	void setJoint(Joint* newJoint);
+
+	void updateNumChildren()
+	{
+		numChildren = children.size();
+	}
+
+	bool checkNumChildren()
+	{
+		return numChildren == children.size();
+	}
 };
 
