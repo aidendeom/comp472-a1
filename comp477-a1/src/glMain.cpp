@@ -58,6 +58,13 @@ double vlen(double x, double y, double z)
 
 float getAngle(Vector2f v1, Vector2f v2)
 {
+	auto l1 = v1.lengthSq();
+	auto l2 = v2.lengthSq();
+
+	// Make sure we don't divide by zero
+	if (std::abs(l1) < EPSILON || std::abs(l2) < EPSILON)
+		return 0;
+
 	v1.normalize();
 	v2.normalize();
 
@@ -176,7 +183,7 @@ void invertMatrix(const GLdouble * m, GLdouble * out)
 
 
 
-void pos(double *px, double *py, double *pz, const int x, const int y,
+void screenToWorldPos(double *px, double *py, double *pz, const int x, const int y,
 	 const int *viewport)
 {
     /*
@@ -348,7 +355,7 @@ void mouseEvent(int button, int state, int x, int y)
 	}
 
     glGetIntegerv(GL_VIEWPORT, viewport);
-    pos(&_dragPosX, &_dragPosY, &_dragPosZ, x, y, viewport);
+    screenToWorldPos(&_dragPosX, &_dragPosY, &_dragPosZ, x, y, viewport);
 }
 
 void mousePassiveFunc(int x, int y)
@@ -402,7 +409,7 @@ void mouseMoveEvent(int x, int y)
         } else if (_mouseRight) {
 			double px, py, pz;
 
-			pos(&px, &py, &pz, x, y, viewport);
+			screenToWorldPos(&px, &py, &pz, x, y, viewport);
 
 			glLoadIdentity();
 			glTranslated(px - _dragPosX, py - _dragPosY, pz - _dragPosZ);
@@ -445,7 +452,7 @@ void mouseMoveEvent(int x, int y)
 		float angle = getAngle(v1, v2);
 
 		double px, py, pz;
-		pos(&px, &py, &pz, x, y, viewport);
+		screenToWorldPos(&px, &py, &pz, x, y, viewport);
 
 		auto currentAngle = j.transform.getLocalRotation().w;
 
