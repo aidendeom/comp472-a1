@@ -78,8 +78,10 @@ Quatf Transform::getLocalRotation() const
 
 void Transform::setLocalRotation(const Quatf& rot)
 {
-	localRotation = rot;
-	localRotation.normalize();
+	if (std::abs(rot.lengthSq()) < EPSILON)
+		std::cout << "rotation has 0 length" << std::endl;
+
+	localRotation = rot.normalized();
 }
 
 Quatf Transform::getWorldRotation() const

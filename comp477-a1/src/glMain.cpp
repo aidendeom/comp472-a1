@@ -77,6 +77,30 @@ float getAngle(Vector2f v1, Vector2f v2)
 	return angle;
 }
 
+Vector3f getEyePosition()
+{
+	auto& m = _matrixI;
+
+	return Vector3f
+	{
+		static_cast<float>(m[3]),
+		static_cast<float>(m[7]),
+		static_cast<float>(m[11])
+	};
+}
+
+Vector3f getEyeDirection()
+{
+	auto& m = _matrix;
+
+	return Vector3f
+	{
+		static_cast<float>(m[8]),
+		static_cast<float>(m[9]),
+		static_cast<float>(m[10])
+	};
+}
+
 void invertMatrix(const GLdouble * m, GLdouble * out)
 {
 
@@ -451,19 +475,11 @@ void mouseMoveEvent(int x, int y)
 
 		float angle = getAngle(v1, v2);
 
-		double px, py, pz;
-		screenToWorldPos(&px, &py, &pz, x, y, viewport);
+		Quatf rot = Quatf::fromAxisRot(getEyeDirection(), angle);
 
-		auto currentAngle = j.transform.getLocalRotation().w;
+		auto newPos = rot.rotatePoint(j.transform.getLocalPosition());
 
-		
-		Quatf selectedPos{ 0, j.transform.getLocalPosition() };
-		Quatf rot = Quatf::fromAxisRot({ 0, 0, 1 }, angle);
-		//-----------------------------^  Set this to the correct axis
-		//								  i.e. eye direction of the camera
-		Quatf result = rot * selectedPos * ~rot;
-
-		j.transform.setLocalPosition(result.v);
+		j.transform.setLocalPosition(newPos);
 		j.transform.setLocalRotation(rot * j.transform.getLocalRotation());
     }
 }
