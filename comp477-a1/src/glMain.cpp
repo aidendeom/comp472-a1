@@ -91,9 +91,6 @@ Vector3f getEyePosition()
 
 Vector3f getEyeDirection()
 {
-	GLdouble mvMatrix[16];
-	glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
-
 	Matrix4d m{ _matrixI };
 
 	Vector4d forward{ 0, 0, -1, 0 };
