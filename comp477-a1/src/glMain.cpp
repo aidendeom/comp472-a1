@@ -79,26 +79,27 @@ float getAngle(Vector2f v1, Vector2f v2)
 
 Vector3f getEyePosition()
 {
-	auto& m = _matrixI;
+	auto& m = _matrix;
 
-	return Vector3f
+	return -Vector3f
 	{
-		static_cast<float>(m[3]),
-		static_cast<float>(m[7]),
-		static_cast<float>(m[11])
+		static_cast<float>(m[12]),
+		static_cast<float>(m[13]),
+		static_cast<float>(m[14])
 	};
 }
 
 Vector3f getEyeDirection()
 {
-	auto& m = _matrix;
+	GLdouble mvMatrix[16];
+	glGetDoublev(GL_MODELVIEW_MATRIX, mvMatrix);
 
-	return Vector3f
-	{
-		static_cast<float>(m[8]),
-		static_cast<float>(m[9]),
-		static_cast<float>(m[10])
-	};
+	Matrix4d m{ _matrixI };
+
+	Vector4d forward{ 0, 0, -1, 0 };
+	Vector4f f{ m * forward };
+
+	return Vector3f{ f.x, f.y, f.z };
 }
 
 void invertMatrix(const GLdouble * m, GLdouble * out)
