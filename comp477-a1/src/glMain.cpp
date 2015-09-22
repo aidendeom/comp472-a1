@@ -71,7 +71,7 @@ float getAngle(Vector2f v1, Vector2f v2)
 	auto angle = std::acosf(Vector2f::dot(v1, v2));
 	auto orientation = (v1.x * v2.y) - (v2.x * v1.y);
 
-	if (orientation < 0)
+	if (orientation > 0)
 		angle = -angle;
 
 	return angle;
@@ -471,7 +471,7 @@ void mouseMoveEvent(int x, int y)
 		auto& p = *j.transform.getParent()->getJoint();
 
 		Vector2i mousePos{ x, y };
-		Vector2f v1 = mousePos - j.screenCoord;
+		Vector2f v1 = mousePos - p.screenCoord;
 		Vector2f v2 = j.screenCoord - p.screenCoord;
 
 		float angle = getAngle(v1, v2);
