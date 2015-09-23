@@ -215,3 +215,7 @@ FakesAssemblies/
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
+
+## Project specific ignores
+!comp477-a1/resoursces/*
+!comp477-a1/bin/*
