@@ -1705,11 +1705,11 @@ Vector3f getTransformedVert(const unsigned int idx,
 
 	Vector3f accumVert{ vert };
 
-	for (int i = 0; i < 17; i++)
-	{
-		auto weight = weights[idx + i];
-		accumVert += joints[i]->transform.transformPoint(vert) * weight;
-	}
+	//for (int i = 0; i < 17; i++)
+	//{
+	//	auto weight = weights[idx + i];
+	//	accumVert += joints[i]->transform.transformPoint(vert) * weight;
+	//}
 
 	return accumVert;
 }
