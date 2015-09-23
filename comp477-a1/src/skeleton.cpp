@@ -206,3 +206,13 @@ Joint* Skeleton::getSelectedJoint()
 
 	return nullptr;
 }
+
+int Skeleton::getNumJoints() const
+{
+	return numJoints;
+}
+
+const std::vector<std::unique_ptr<Joint>>* Skeleton::getJoints() const
+{
+	return &joints;
+}

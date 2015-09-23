@@ -21,6 +21,8 @@
 #endif
 #endif
 
+#include <vector>
+#include "skeleton.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265f
@@ -226,7 +228,7 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode);
  *            GLM_FLAT and GLM_SMOOTH should not both be specified.
  */
 GLvoid
-glmDraw(GLMmodel* model, GLuint mode);
+glmDraw(GLMmodel* model, GLuint mode, const std::vector<float>* weights = nullptr, const std::vector<std::unique_ptr<Joint>>* joints = nullptr);
 
 /* glmList: Generates and returns a display list for the model using
  * the mode specified.
@@ -283,3 +285,8 @@ glmWeld(GLMmodel* model, GLfloat epsilon);
  */
 GLubyte* 
 glmReadPPM(char* filename, int* width, int* height);
+
+Vector3f getTransformedVert(const unsigned int idx,
+	const GLfloat* verts,
+	const std::vector<float>& weights,
+	const std::vector<std::unique_ptr<Joint>>& joints);
