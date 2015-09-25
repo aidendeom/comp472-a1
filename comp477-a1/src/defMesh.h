@@ -23,6 +23,7 @@ private:
 	Transform* getTransformForBone(int bone);
 	Vector3f makeVector(int point);
 	void updatePoint(const Vector3f& p, int idx);
+	void multWeight(GLfloat* v, float weight);
 
 public:
     Skeleton mySkeleton;

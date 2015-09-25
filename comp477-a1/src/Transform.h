@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "vmath/vmath.h"
+#include "GL/freeglut.h"
 
 struct Joint;
 
@@ -57,5 +58,6 @@ public:
 	}
 
 	void transformPoint(Vector3f& p);
+	void transformPoint(GLfloat* v);
 };
 

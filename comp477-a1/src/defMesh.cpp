@@ -60,21 +60,25 @@ void DefMesh::glDraw(int type)
     mySkeleton.glDrawSkeleton();
 }
 
+bool first = true;
+
 void DefMesh::transformVerts()
 {
+	auto& v = pmodel->vertices;
+
 	for (GLuint i = 0; i < pmodel->numvertices / 3; i++)
 	{
-		Vector3f point{ 0, 0, 0 };
+		bool print = first;
 		for (size_t b = 0; b < 17; b++)
 		{
 			float weight = getWeightForPointAndBone(i, b);
+			//if (print)
+			//	std::cout << weight << std::endl;
 			Transform* trans = getTransformForBone(b);
-			auto v = makeVector(i);
-			trans->transformPoint(v);
-			v *= weight;
-			point += v;
+			trans->transformPoint(&v[i]);
+			//multWeight(&v[i], weight);
 		}
-		updatePoint(point, i);
+		first = false;
 	}
 }
 
@@ -112,6 +116,13 @@ void DefMesh::updatePoint(const Vector3f& p, int idx)
 	v[idx + 0] = p.x;
 	v[idx + 1] = p.y;
 	v[idx + 2] = p.z;
+}
+
+void DefMesh::multWeight(GLfloat* v, float weight)
+{
+	v[0] *= weight;
+	v[1] *= weight;
+	v[2] *= weight;
 }
 
 DefMesh::~DefMesh()

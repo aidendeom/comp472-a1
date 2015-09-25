@@ -133,3 +133,8 @@ void Transform::transformPoint(Vector3f& p)
 	//p = getWorldRotation().rotatePoint(p);
 	//p += localPosition;
 }
+
+void Transform::transformPoint(GLfloat* v)
+{
+	// Nothin yet
+}
