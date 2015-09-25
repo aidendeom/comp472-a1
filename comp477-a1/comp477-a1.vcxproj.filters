@@ -42,6 +42,12 @@
     <ClInclude Include="src\vmath\vmath.h">
       <Filter>Header Files\vmath</Filter>
     </ClInclude>
+    <ClInclude Include="src\aiden_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WeightFileReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\defMesh.cpp">
@@ -67,6 +73,12 @@
     </ClCompile>
     <ClCompile Include="src\vmath\vmath.cpp">
       <Filter>Source Files\vmath</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WeightFileReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\aiden_utils.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

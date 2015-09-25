@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\aiden_utils.h" />
     <ClInclude Include="src\defMesh.h" />
     <ClInclude Include="src\glm.h" />
     <ClInclude Include="src\simpleMath.h" />
@@ -18,8 +19,10 @@
     <ClInclude Include="src\splitstring.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\vmath\vmath.h" />
+    <ClInclude Include="src\WeightFileReader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\aiden_utils.cpp" />
     <ClCompile Include="src\defMesh.cpp" />
     <ClCompile Include="src\glm.cpp" />
     <ClCompile Include="src\glMain.cpp" />
@@ -28,6 +31,7 @@
     <ClCompile Include="src\splitstring.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\vmath\vmath.cpp" />
+    <ClCompile Include="src\WeightFileReader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D96E1573-4447-4F75-8312-99D3F5B948D2}</ProjectGuid>
