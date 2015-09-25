@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "WeightFileReader.h"
+#include "Transform.h"
 
 DefMesh::DefMesh()
 {
@@ -51,11 +52,66 @@ void DefMesh::glDraw(int type)
     glPushMatrix();
 		glScalef(2,2,2);
 		glTranslatef(-0.5, -0.5, -0.5);
+		transformVerts();
 		glmDraw(pmodel, mode);
     glPopMatrix();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     mySkeleton.glDrawSkeleton();
+}
+
+void DefMesh::transformVerts()
+{
+	for (GLuint i = 0; i < pmodel->numvertices / 3; i++)
+	{
+		Vector3f point{ 0, 0, 0 };
+		for (size_t b = 0; b < 17; b++)
+		{
+			float weight = getWeightForPointAndBone(i, b);
+			auto trans = getTransformForBone(b);
+			auto v = makeVector(i);
+			trans.transformPoint(v);
+			v *= weight;
+			point += v;
+		}
+
+	}
+}
+
+float DefMesh::getWeightForPointAndBone(int point, int bone)
+{
+	// points go from 0 -> numVertices - 1
+	// bones go from 0 -> 17 i.e. joint 1 -> 18
+	int idx = point * 17 + bone;
+
+	return weights[idx];
+}
+
+Transform DefMesh::getTransformForBone(int bone)
+{
+	bone++;
+
+	auto& joints = *mySkeleton.getJoints();
+	return joints[bone]->transform;
+}
+
+Vector3f DefMesh::makeVector(int point)
+{
+	int p1 = point + 0;
+	int p2 = point + 1;
+	int p3 = point + 2;
+
+	auto& v = pmodel->vertices;
+
+	return Vector3f{ v[p1], v[p2], v[p3] };
+}
+
+void DefMesh::updatePoint(const Vector3f& p, int idx)
+{
+	auto& v = pmodel->vertices;
+	v[idx + 0] = p.x;
+	v[idx + 1] = p.y;
+	v[idx + 2] = p.z;
 }
 
 DefMesh::~DefMesh()

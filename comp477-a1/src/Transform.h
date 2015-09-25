@@ -56,6 +56,6 @@ public:
 		return numChildren == children.size();
 	}
 
-	Vector3f transformPoint(Vector3f p);
+	void transformPoint(Vector3f& p);
 };
 

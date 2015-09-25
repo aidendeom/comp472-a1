@@ -7,6 +7,7 @@
 
 #include "./glm.h"
 #include "./skeleton.h"
+#include "Transform.h"
 #include <vector>
 #include <string>
 
@@ -17,6 +18,11 @@ private:
 	std::vector<float> weights;
 
 	void loadWeights(const std::string& path);
+	void transformVerts();
+	float getWeightForPointAndBone(int point, int bone);
+	Transform getTransformForBone(int bone);
+	Vector3f makeVector(int point);
+	void updatePoint(const Vector3f& p, int idx);
 
 public:
     Skeleton mySkeleton;
