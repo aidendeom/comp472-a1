@@ -64,7 +64,7 @@ bool first = true;
 
 void DefMesh::transformVerts()
 {
-	auto& v = pmodel->vertices;
+	auto v = pmodel->vertices;
 
 	for (GLuint i = 0; i < pmodel->numvertices / 3; i++)
 	{
