@@ -1580,7 +1580,7 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode)
  *             GLM_FLAT and GLM_SMOOTH should not both be specified.  
  */
 GLvoid
-glmDraw(GLMmodel* model, GLuint mode, const std::vector<float>* weights, const std::vector<std::unique_ptr<Joint>>* joints)
+glmDraw(GLMmodel* model, GLuint mode)
 {
     static GLuint i;
     static GLMgroup* group;
@@ -1663,55 +1663,28 @@ glmDraw(GLMmodel* model, GLuint mode, const std::vector<float>* weights, const s
             if (mode & GLM_TEXTURE)
                 glTexCoord2fv(&model->texcoords[2 * triangle->tindices[0]]);
 
-			auto idx = 3 * triangle->vindices[0];
-			auto v = getTransformedVert(idx, model->vertices, *weights, *joints);
-            glVertex3fv(v);
-			//glVertex3fv(&model->vertices[3 * triangle->vindices[1]]);
+			glVertex3fv(&model->vertices[3 * triangle->vindices[0]]);
 
             if (mode & GLM_SMOOTH)
                 glNormal3fv(&model->normals[3 * triangle->nindices[1]]);
             if (mode & GLM_TEXTURE)
                 glTexCoord2fv(&model->texcoords[2 * triangle->tindices[1]]);
 
-			idx = 3 * triangle->vindices[1];
-			v = getTransformedVert(idx, model->vertices, *weights, *joints);
-			glVertex3fv(v);
-            //glVertex3fv(&model->vertices[3 * triangle->vindices[1]]);
+
+            glVertex3fv(&model->vertices[3 * triangle->vindices[1]]);
             
             if (mode & GLM_SMOOTH)
 				      glNormal3fv(&model->normals[3 * triangle->nindices[2]]);
             if (mode & GLM_TEXTURE)
                 glTexCoord2fv(&model->texcoords[2 * triangle->tindices[2]]);
 
-			idx = 3 * triangle->vindices[2];
-			v = getTransformedVert(idx, model->vertices, *weights, *joints);
-			glVertex3fv(v);
-            //glVertex3fv(&model->vertices[3 * triangle->vindices[2]]);
+            glVertex3fv(&model->vertices[3 * triangle->vindices[2]]);
             
         }
         glEnd();
         
         group = group->next;
     }
-}
-
-Vector3f getTransformedVert(const unsigned int idx,
-	const GLfloat* verts,
-	const std::vector<float>& weights,
-	const std::vector<std::unique_ptr<Joint>>& joints)
-{
-	auto v = &verts[idx];
-	Vector3f vert{ v[0], v[1], v[2] };
-
-	Vector3f accumVert{ vert };
-
-	//for (int i = 0; i < 17; i++)
-	//{
-	//	auto weight = weights[idx + i];
-	//	accumVert += joints[i]->transform.transformPoint(vert) * weight;
-	//}
-
-	return accumVert;
 }
 
 /* glmList: Generates and returns a display list for the model using
