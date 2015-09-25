@@ -136,5 +136,8 @@ void Transform::transformPoint(Vector3f& p)
 
 void Transform::transformPoint(GLfloat* v)
 {
-	// Nothin yet
+	auto p = getWorldRotation().rotatePoint(Quatf{ 0, v[0], v[1], v[2] });
+	v[0] = p.x;
+	v[1] = p.y;
+	v[2] = p.z;
 }
