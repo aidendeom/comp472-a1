@@ -131,5 +131,5 @@ void Transform::setJoint(Joint* newJoint)
 void Transform::transformPoint(Vector3f& p)
 {
 	//p = getWorldRotation().rotatePoint(p);
-	p += localPosition;
+	//p += localPosition;
 }

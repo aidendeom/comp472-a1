@@ -68,13 +68,13 @@ void DefMesh::transformVerts()
 		for (size_t b = 0; b < 17; b++)
 		{
 			float weight = getWeightForPointAndBone(i, b);
-			auto trans = getTransformForBone(b);
+			Transform* trans = getTransformForBone(b);
 			auto v = makeVector(i);
-			trans.transformPoint(v);
+			trans->transformPoint(v);
 			v *= weight;
 			point += v;
 		}
-
+		updatePoint(point, i);
 	}
 }
 
@@ -87,12 +87,12 @@ float DefMesh::getWeightForPointAndBone(int point, int bone)
 	return weights[idx];
 }
 
-Transform DefMesh::getTransformForBone(int bone)
+Transform* DefMesh::getTransformForBone(int bone)
 {
 	bone++;
 
 	auto& joints = *mySkeleton.getJoints();
-	return joints[bone]->transform;
+	return &joints[bone]->transform;
 }
 
 Vector3f DefMesh::makeVector(int point)

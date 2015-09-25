@@ -20,7 +20,7 @@ private:
 	void loadWeights(const std::string& path);
 	void transformVerts();
 	float getWeightForPointAndBone(int point, int bone);
-	Transform getTransformForBone(int bone);
+	Transform* getTransformForBone(int bone);
 	Vector3f makeVector(int point);
 	void updatePoint(const Vector3f& p, int idx);
 
