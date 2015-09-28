@@ -99,3 +99,8 @@ void DefMesh::transformVerts()
 		currentVert[2] = v.z;
 	}
 }
+
+void DefMesh::resetSkeletonDeltas()
+{
+	mySkeleton.resetDeltas();
+}
