@@ -75,17 +75,19 @@ void DefMesh::transformVerts()
 		auto vertIdx = (i + 1) * 3;
 		auto currentVert = &verts[vertIdx];
 		Vector3f v{ currentVert[0], currentVert[1], currentVert[2] };
+		Vector3f vAccum{ v };
 
 		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
 		{
-			auto weightIdx = i * 17;
-			auto currentWeight = weights[weightIdx + b];
 			auto& bone = (*mySkeleton.getJoints())[b + 1];
 
 			if (!bone->hasDelta)
 				continue;
 			
+			auto weightIdx = i * 17;
+			auto currentWeight = weights[weightIdx + b];
+
 			auto& trans = bone->delta;
 
 			Vector3f vTransformed{ v };
@@ -93,12 +95,12 @@ void DefMesh::transformVerts()
 
 			vTransformed -= v;
 			vTransformed *= currentWeight;
-			v += vTransformed;
+			vAccum += vTransformed;
 		}
 
-		currentVert[0] = v.x;
-		currentVert[1] = v.y;
-		currentVert[2] = v.z;
+		currentVert[0] = vAccum.x;
+		currentVert[1] = vAccum.y;
+		currentVert[2] = vAccum.z;
 	}
 }
 
