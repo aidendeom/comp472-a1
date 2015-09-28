@@ -22,6 +22,7 @@
 struct Joint
 {
 	Transform transform;
+	Transform delta;
     Vector2i screenCoord;
     bool isHovered;
     bool isPicked;
@@ -31,6 +32,11 @@ struct Joint
 		isPicked{ false }
 	{
 		transform.setJoint(this);
+	}
+
+	void resetDelta()
+	{
+		delta.reset();
 	}
 };
 
@@ -83,6 +89,8 @@ public:
 	int getNumJoints() const;
 
 	const std::vector<std::unique_ptr<Joint>>* getJoints() const;
+
+	void resetDeltas() const;
 };
 
 #endif

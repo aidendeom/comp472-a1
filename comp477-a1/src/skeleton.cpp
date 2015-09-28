@@ -216,3 +216,11 @@ const std::vector<std::unique_ptr<Joint>>* Skeleton::getJoints() const
 {
 	return &joints;
 }
+
+void Skeleton::resetDeltas() const
+{
+	for (auto& j : joints)
+	{
+		j->delta.reset();
+	}
+}

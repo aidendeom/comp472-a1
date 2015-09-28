@@ -57,7 +57,8 @@ public:
 		return numChildren == children.size();
 	}
 
-	void transformPoint(Vector3f& p);
-	void transformPoint(GLfloat* v);
+	Vector3f transformPoint(const Vector3f& p);
+
+	void reset();
 };
 

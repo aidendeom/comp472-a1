@@ -29,6 +29,11 @@ DefMesh::DefMesh()
     }
 }
 
+DefMesh::~DefMesh()
+{
+	glmDelete(pmodel);
+}
+
 void DefMesh::loadWeights(const std::string& path)
 {
 	WeightFileReader wf{ path };
@@ -60,72 +65,37 @@ void DefMesh::glDraw(int type)
     mySkeleton.glDrawSkeleton();
 }
 
-bool first = true;
-
 void DefMesh::transformVerts()
 {
-	auto v = pmodel->vertices;
+	auto verts = pmodel->vertices;
 
-	for (GLuint i = 0; i < pmodel->numvertices / 3; i++)
+	for (GLuint i = 0; i < pmodel->numvertices; i++)
 	{
-		bool print = first;
+		if (i == pmodel->numvertices - 1)
+		{
+			int a = 0;
+		}
+
+		// The vert index is 1-based, not 0-based
+		auto vertIdx = (i + 1) * 3;
+		auto currentVert = &verts[vertIdx];
+		Vector3f v{ currentVert[0], currentVert[1], currentVert[2] };
+
+		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
 		{
-			float weight = getWeightForPointAndBone(i, b);
-			//if (print)
-			//	std::cout << weight << std::endl;
-			Transform* trans = getTransformForBone(b);
-			trans->transformPoint(&v[i]);
-			//multWeight(&v[i], weight);
+			auto weightIdx = i * 17;
+			auto currentWeight = weights[weightIdx + b];
+			auto& bone = mySkeleton.getJoints()->at(b + 1);
+			auto& trans = bone->delta;
+			auto vTransformed = trans.transformPoint(v);
+			vTransformed -= v;
+			vTransformed *= currentWeight;
+			v += vTransformed;
 		}
-		first = false;
+
+		currentVert[0] = v.x;
+		currentVert[1] = v.y;
+		currentVert[2] = v.z;
 	}
-}
-
-float DefMesh::getWeightForPointAndBone(int point, int bone)
-{
-	// points go from 0 -> numVertices - 1
-	// bones go from 0 -> 17 i.e. joint 1 -> 18
-	int idx = point * 17 + bone;
-
-	return weights[idx];
-}
-
-Transform* DefMesh::getTransformForBone(int bone)
-{
-	bone++;
-
-	auto& joints = *mySkeleton.getJoints();
-	return &joints[bone]->transform;
-}
-
-Vector3f DefMesh::makeVector(int point)
-{
-	int p1 = point + 0;
-	int p2 = point + 1;
-	int p3 = point + 2;
-
-	auto& v = pmodel->vertices;
-
-	return Vector3f{ v[p1], v[p2], v[p3] };
-}
-
-void DefMesh::updatePoint(const Vector3f& p, int idx)
-{
-	auto& v = pmodel->vertices;
-	v[idx + 0] = p.x;
-	v[idx + 1] = p.y;
-	v[idx + 2] = p.z;
-}
-
-void DefMesh::multWeight(GLfloat* v, float weight)
-{
-	v[0] *= weight;
-	v[1] *= weight;
-	v[2] *= weight;
-}
-
-DefMesh::~DefMesh()
-{
-	glmDelete(pmodel);
 }

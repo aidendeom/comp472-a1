@@ -479,6 +479,10 @@ void mouseMoveEvent(int x, int y)
 
 		j.transform.setLocalPosition(newPos);
 		j.transform.setLocalRotation(rot * j.transform.getLocalRotation());
+
+		// Set the delta for this frame
+		j.delta.setLocalPosition(newPos);
+		j.delta.setLocalRotation(rot);
     }
 }
 
@@ -525,24 +529,25 @@ void display()
     glPushMatrix();
 
     myDefMesh.glDraw(meshModel);
+	myDefMesh.resetSkeletonDeltas();
     
     glPopMatrix();
     
     glutSwapBuffers();
 }
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-
-#define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
-
-void pr(Quatf q)			{ cout << q << endl; }
-void pr(Vector3f v)			{ cout << v << endl; }
-void pr()					{ cout << endl; }
-void pr(const char* str)	{ cout << str << endl; }
-
-typedef Vector3f v;
-typedef Quatf q;
+//#define _USE_MATH_DEFINES
+//#include <math.h>
+//
+//#define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
+//
+//void pr(Quatf q)			{ cout << q << endl; }
+//void pr(Vector3f v)			{ cout << v << endl; }
+//void pr()					{ cout << endl; }
+//void pr(const char* str)	{ cout << str << endl; }
+//
+//typedef Vector3f v;
+//typedef Quatf q;
 
 int main(int argc, char **argv)
 {

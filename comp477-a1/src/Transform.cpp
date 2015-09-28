@@ -128,16 +128,17 @@ void Transform::setJoint(Joint* newJoint)
 	containingJoint = newJoint;
 }
 
-void Transform::transformPoint(Vector3f& p)
+Vector3f Transform::transformPoint(const Vector3f& p)
 {
-	//p = getWorldRotation().rotatePoint(p);
-	//p += localPosition;
+	auto v = getWorldRotation().rotatePoint(p);
+	v += localPosition;
+
+	return v;
 }
 
-void Transform::transformPoint(GLfloat* v)
+void Transform::reset()
 {
-	auto p = getWorldRotation().rotatePoint(Quatf{ 0, v[0], v[1], v[2] });
-	v[0] = p.x;
-	v[1] = p.y;
-	v[2] = p.z;
+	localPosition = Vector3f{ 0, 0, 0 };
+	localRotation = Quatf{ 1, 0, 0, 0 };
+	localScale = Vector3f{ 0, 0, 0 };
 }

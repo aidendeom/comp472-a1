@@ -18,12 +18,9 @@ private:
 	std::vector<float> weights;
 
 	void loadWeights(const std::string& path);
+
+	// Vert transformation methods
 	void transformVerts();
-	float getWeightForPointAndBone(int point, int bone);
-	Transform* getTransformForBone(int bone);
-	Vector3f makeVector(int point);
-	void updatePoint(const Vector3f& p, int idx);
-	void multWeight(GLfloat* v, float weight);
 
 public:
     Skeleton mySkeleton;
@@ -33,5 +30,6 @@ public:
 	~DefMesh();
 
     void glDraw(int type);
+	void resetSkeletonDeltas();
 };
 #endif
