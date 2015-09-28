@@ -57,7 +57,7 @@ public:
 		return numChildren == children.size();
 	}
 
-	Vector3f transformPoint(const Vector3f& p);
+	void transformPoint(Vector3f& p) const;
 
 	void reset();
 };

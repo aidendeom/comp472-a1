@@ -483,6 +483,7 @@ void mouseMoveEvent(int x, int y)
 		// Set the delta for this frame
 		j.delta.setLocalPosition(newPos);
 		j.delta.setLocalRotation(rot);
+		j.hasDelta = true;
     }
 }
 
@@ -493,6 +494,25 @@ void display()
     glLoadIdentity();
 	glMultMatrixd(_matrix);
 
+	//draw terrain
+    //glColor3f(0.5,0.5,0.5);
+	glPushMatrix();
+	glColor3f(0.7f, 0.7f, 0.7f);
+    glBegin(GL_QUADS);
+		glVertex3f(-3.0f, -0.85f, 3.0f);
+		glVertex3f(3.0f, -0.85f, 3.0f);
+		glVertex3f(3.0f, -0.85f, -3.0f);
+		glVertex3f(-3.0f, -0.85f, -3.0f);
+    glEnd();
+	glPopMatrix();
+
+    glPushMatrix();
+
+    myDefMesh.glDraw(meshModel);
+	myDefMesh.resetSkeletonDeltas();
+    
+    glPopMatrix();
+    
 	// Drawing reference coord system
 	const int length = 3;
 	const GLfloat r[]{ 1, 0, 0, 1 };
@@ -514,25 +534,6 @@ void display()
 		glVertex3i(0, 0, length);
 	glEnd();
 
-
-    glColor3f(0.5,0.5,0.5);
-    glPushMatrix();													//draw terrain
-	glColor3f(0.7f, 0.7f, 0.7f);
-    glBegin(GL_QUADS);
-		glVertex3f(-3.0f, -0.85f, 3.0f);
-		glVertex3f(3.0f, -0.85f, 3.0f);
-		glVertex3f(3.0f, -0.85f, -3.0f);
-		glVertex3f(-3.0f, -0.85f, -3.0f);
-    glEnd();
-	glPopMatrix();
-
-    glPushMatrix();
-
-    myDefMesh.glDraw(meshModel);
-	myDefMesh.resetSkeletonDeltas();
-    
-    glPopMatrix();
-    
     glutSwapBuffers();
 }
 

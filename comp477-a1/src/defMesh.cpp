@@ -71,11 +71,6 @@ void DefMesh::transformVerts()
 
 	for (GLuint i = 0; i < pmodel->numvertices; i++)
 	{
-		if (i == pmodel->numvertices - 1)
-		{
-			int a = 0;
-		}
-
 		// The vert index is 1-based, not 0-based
 		auto vertIdx = (i + 1) * 3;
 		auto currentVert = &verts[vertIdx];
@@ -86,9 +81,16 @@ void DefMesh::transformVerts()
 		{
 			auto weightIdx = i * 17;
 			auto currentWeight = weights[weightIdx + b];
-			auto& bone = mySkeleton.getJoints()->at(b + 1);
+			auto& bone = (*mySkeleton.getJoints())[b + 1];
+
+			if (!bone->hasDelta)
+				continue;
+			
 			auto& trans = bone->delta;
-			auto vTransformed = trans.transformPoint(v);
+
+			Vector3f vTransformed{ v };
+			trans.transformPoint(vTransformed);
+
 			vTransformed -= v;
 			vTransformed *= currentWeight;
 			v += vTransformed;

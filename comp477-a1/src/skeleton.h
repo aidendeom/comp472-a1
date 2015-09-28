@@ -26,10 +26,12 @@ struct Joint
     Vector2i screenCoord;
     bool isHovered;
     bool isPicked;
+	bool hasDelta;
     
 	Joint() :
 		isHovered{ false },
-		isPicked{ false }
+		isPicked{ false },
+		hasDelta{ false }
 	{
 		transform.setJoint(this);
 	}
@@ -37,6 +39,7 @@ struct Joint
 	void resetDelta()
 	{
 		delta.reset();
+		hasDelta = false;
 	}
 };
 

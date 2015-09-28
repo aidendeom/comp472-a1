@@ -128,12 +128,10 @@ void Transform::setJoint(Joint* newJoint)
 	containingJoint = newJoint;
 }
 
-Vector3f Transform::transformPoint(const Vector3f& p)
+void Transform::transformPoint(Vector3f& p) const
 {
 	//auto v = getWorldRotation().rotatePoint(p);
-	auto v = p + localPosition;
-
-	return v;
+	p += localPosition;
 }
 
 void Transform::reset()
