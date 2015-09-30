@@ -74,7 +74,8 @@ float getAngle(Vector2f v1, Vector2f v2)
 	if (orientation > 0)
 		angle = -angle;
 
-	return angle;
+	// Radians to degrees
+	return angle * (180.0f / M_PI);
 }
 
 Vector3f getEyePosition()
