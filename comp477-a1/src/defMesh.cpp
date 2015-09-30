@@ -65,6 +65,8 @@ void DefMesh::glDraw(int type)
     mySkeleton.glDrawSkeleton();
 }
 
+Vector3f last{ 0, 0, 0 };
+
 void DefMesh::transformVerts()
 {
 	auto verts = pmodel->vertices;
@@ -75,7 +77,6 @@ void DefMesh::transformVerts()
 		auto vertIdx = (i + 1) * 3;
 		auto currentVert = &verts[vertIdx];
 		Vector3f v{ currentVert[0], currentVert[1], currentVert[2] };
-		Vector3f vAccum{ v };
 
 		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
@@ -88,19 +89,18 @@ void DefMesh::transformVerts()
 			auto weightIdx = i * 17;
 			auto currentWeight = weights[weightIdx + b];
 
-			auto& trans = bone->delta;
+			auto& delta = bone->delta;
 
-			Vector3f vTransformed{ v };
-			trans.transformPoint(vTransformed);
+			Vector3f vTransformed{ 0,0,0 };
+			delta.transformPoint(vTransformed);
 
-			vTransformed -= v;
 			vTransformed *= currentWeight;
-			vAccum += vTransformed;
+			v += vTransformed;
 		}
 
-		currentVert[0] = vAccum.x;
-		currentVert[1] = vAccum.y;
-		currentVert[2] = vAccum.z;
+		currentVert[0] = v.x;
+		currentVert[1] = v.y;
+		currentVert[2] = v.z;
 	}
 }
 

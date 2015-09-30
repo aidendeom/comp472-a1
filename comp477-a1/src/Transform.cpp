@@ -130,13 +130,13 @@ void Transform::setJoint(Joint* newJoint)
 
 void Transform::transformPoint(Vector3f& p) const
 {
-	//auto v = getWorldRotation().rotatePoint(p);
-	p += localPosition;
+	p += getWorldPosition();
+	//p = getLocalRotation().rotatePoint(p);
 }
 
 void Transform::reset()
 {
 	localPosition = Vector3f{ 0, 0, 0 };
 	localRotation = Quatf{ 1, 0, 0, 0 };
-	localScale = Vector3f{ 0, 0, 0 };
+	localScale = Vector3f{ 1, 1, 1 };
 }

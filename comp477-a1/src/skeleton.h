@@ -22,6 +22,7 @@
 struct Joint
 {
 	Transform transform;
+	Transform originalTransform;
 	Transform delta;
     Vector2i screenCoord;
     bool isHovered;
@@ -36,6 +37,15 @@ struct Joint
 		transform.setJoint(this);
 	}
 
+	void setDelta(bool delta)
+	{
+		hasDelta = delta;
+		for (auto& t : transform.getChildren())
+		{
+			t->getJoint()->setDelta(delta);
+		}
+	}
+
 	void resetDelta()
 	{
 		delta.reset();
@@ -47,18 +57,16 @@ class Skeleton
 {
 private:
     std::vector<std::unique_ptr<Joint>> joints;
+
     /*Update screen coordinates of joints*/
     void updateScreenCoord();
 	
 	void printSkeletonHierarchy();
-
-	size_t numJoints;
     
 public:
     /*True if the skeleton has a joint selected*/
     bool hasJointSelected;   
     Skeleton() : 
-		numJoints{ 0 },
 		hasJointSelected{ false }
 	{};
     /*

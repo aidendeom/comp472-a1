@@ -19,6 +19,10 @@ void Skeleton::loadSkeleton(std::string skelFileName)
     if (skelFile.is_open())
     {
         while ( std::getline(skelFile, strBone)) { //Read a line to build a bone
+			// Comment in bone file
+			if (strBone[0] == '#' || strBone.length() == 0)
+				continue;
+
             std::vector<std::string> boneParams;
             splitstring splitStr(strBone);
             boneParams = splitStr.split(' ');
@@ -35,6 +39,7 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 			};
 
 			trans.setWorldPosition(worldPos);
+			temp->originalTransform.setWorldPosition(worldPos);
 
 			auto parentIdx = std::stoi(boneParams[4]);
 
@@ -46,13 +51,6 @@ void Skeleton::loadSkeleton(std::string skelFileName)
                 std::cout<<"[Warning!!!] Bone index not match\n";
             }
         }
-
-		numJoints = joints.size();
-
-		for (auto& j : joints)
-		{
-			j->transform.updateNumChildren();
-		}
     }
 }
 
@@ -147,8 +145,8 @@ void Skeleton::updateScreenCoord()
         gluProject((GLdouble)pos.x, (GLdouble)pos.y, (GLdouble)pos.z,
                 modelview, projection, viewport,
                 &winX, &winY, &winZ );
-        joints[i]->screenCoord.x = winX;
-        joints[i]->screenCoord.y = (double)glutGet(GLUT_WINDOW_HEIGHT)-winY;
+        joints[i]->screenCoord.x = static_cast<int>(winX);
+		joints[i]->screenCoord.y = static_cast<int>((double)glutGet(GLUT_WINDOW_HEIGHT) - winY);
     }
 }
 void Skeleton::checkHoveringStatus(int x, int y)
@@ -205,11 +203,6 @@ Joint* Skeleton::getSelectedJoint()
 		return selected->get();
 
 	return nullptr;
-}
-
-int Skeleton::getNumJoints() const
-{
-	return numJoints;
 }
 
 const std::vector<std::unique_ptr<Joint>>* Skeleton::getJoints() const

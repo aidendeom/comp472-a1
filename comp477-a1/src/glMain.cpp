@@ -68,14 +68,14 @@ float getAngle(Vector2f v1, Vector2f v2)
 	v1.normalize();
 	v2.normalize();
 
-	auto angle = std::acosf(Vector2f::dot(v1, v2));
+	auto angle = std::acos(Vector2f::dot(v1, v2));
 	auto orientation = (v1.x * v2.y) - (v2.x * v1.y);
 
 	if (orientation > 0)
 		angle = -angle;
 
 	// Radians to degrees
-	return angle * (180.0f / M_PI);
+	return static_cast<float>(angle * (180.0 / M_PI));
 }
 
 Vector3f getEyePosition()
@@ -477,14 +477,15 @@ void mouseMoveEvent(int x, int y)
 		Quatf rot = Quatf::fromAxisRot(getEyeDirection(), angle);
 
 		auto newPos = rot.rotatePoint(j.transform.getLocalPosition());
-
-		j.transform.setLocalPosition(newPos);
-		j.transform.setLocalRotation(rot * j.transform.getLocalRotation());
+		auto newRot = rot * j.transform.getLocalRotation();
 
 		// Set the delta for this frame
-		j.delta.setLocalPosition(newPos);
+		j.delta.setLocalPosition(newPos - j.transform.getLocalPosition());
 		j.delta.setLocalRotation(rot);
-		j.hasDelta = true;
+		j.setDelta(true);
+
+		j.transform.setLocalPosition(newPos);
+		j.transform.setLocalRotation(newRot);
     }
 }
 
