@@ -476,15 +476,12 @@ void mouseMoveEvent(int x, int y)
 
 		Quatf rot = Quatf::fromAxisRot(getEyeDirection(), angle);
 
-		auto newPos = rot.rotatePoint(j.transform.getLocalPosition());
 		auto newRot = rot * j.transform.getLocalRotation();
 
 		// Set the delta for this frame
-		j.delta.setLocalPosition(newPos - j.transform.getLocalPosition());
 		j.delta.setLocalRotation(rot);
 		j.setDelta(true);
 
-		j.transform.setLocalPosition(newPos);
 		j.transform.setLocalRotation(newRot);
     }
 }
