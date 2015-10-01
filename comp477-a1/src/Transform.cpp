@@ -130,10 +130,9 @@ void Transform::setJoint(Joint* newJoint)
 	containingJoint = newJoint;
 }
 
-void Transform::transformPoint(Vector3f& p) const
+void Transform::transformPoint(Vector3f& p, float weight) const
 {
-	//p += getWorldPosition();
-	//p = getLocalRotation().rotatePoint(p);
+	p = localRotation.rotatePoint(p) * weight;
 }
 
 void Transform::reset()

@@ -47,17 +47,7 @@ public:
 	Joint* getJoint();
 	void setJoint(Joint* newJoint);
 
-	//void updateNumChildren()
-	//{
-	//	numChildren = children.size();
-	//}
-
-	//bool checkNumChildren()
-	//{
-	//	return numChildren == children.size();
-	//}
-
-	void transformPoint(Vector3f& p) const;
+	void transformPoint(Vector3f& p, float weight) const;
 
 	void reset();
 };

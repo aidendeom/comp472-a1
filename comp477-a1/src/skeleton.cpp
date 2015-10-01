@@ -207,6 +207,6 @@ void Skeleton::resetDeltas() const
 {
 	for (auto& j : joints)
 	{
-		j->delta.reset();
+		j->resetDelta();
 	}
 }

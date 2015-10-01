@@ -16,15 +16,18 @@ class DefMesh
 private:
 	int numBones;
 	std::vector<float> weights;
+	std::vector<GLfloat> defaultVerts;
+	float transMats[17][16];
 
 	void loadWeights(const std::string& path);
 
 	// Vert transformation methods
 	void transformVerts();
+	void updateTransMats();
 
 public:
     Skeleton mySkeleton;
-    GLMmodel * pmodel;
+    GLMmodel* pmodel;
     GLuint mode;
     DefMesh(); 
 	~DefMesh();

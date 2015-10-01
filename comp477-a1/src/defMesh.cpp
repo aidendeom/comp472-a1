@@ -1,11 +1,7 @@
 #include "defMesh.h"
 
 #include <string>
-#include <fstream>
 #include <iostream>
-#include <sstream>
-#include <assert.h>
-#include <ctime>
 
 #include "WeightFileReader.h"
 #include "Transform.h"
@@ -21,11 +17,19 @@ DefMesh::DefMesh()
     char meshFile[] = "./resources/cheb.obj";
     pmodel = glmReadOBJ(meshFile);
     if (!pmodel) {
-        return;
+        throw "Failed to load OBJ model";
     }
         glmFacetNormals(pmodel);
         glmVertexNormals(pmodel, 0);
         glmFacetNormals(pmodel);
+
+		GLuint vertsLen = (pmodel->numvertices + 1) * 3;
+
+		defaultVerts.resize(vertsLen);
+		for (GLuint i = 0; i < vertsLen; i++)
+		{
+			defaultVerts[i] = pmodel->vertices[i];
+		}
     }
 }
 
@@ -65,39 +69,50 @@ void DefMesh::glDraw(int type)
     mySkeleton.glDrawSkeleton();
 }
 
-Vector3f last{ 0, 0, 0 };
+void DefMesh::updateTransMats()
+{
+	for (size_t b = 1; b < 18; b++)
+	{
+		auto& bone = (*mySkeleton.getJoints())[b];
+
+		if (!bone->hasDelta)
+			continue;
+
+		auto T = bone->transform.getWorldRotation().inverted().transform();
+		//for (size_t i = 0; i < 16; i++)
+		//	transMats[b][i] = T[i];
+	}
+}
 
 void DefMesh::transformVerts()
 {
 	auto verts = pmodel->vertices;
+	updateTransMats();
 
 	for (GLuint i = 0; i < pmodel->numvertices; i++)
 	{
 		// The vert index is 1-based, not 0-based
 		auto vertIdx = (i + 1) * 3;
-		auto currentVert = &verts[vertIdx];
-		Vector3f v{ currentVert[0], currentVert[1], currentVert[2] };
+
+		Vector3f v
+		{
+			defaultVerts[vertIdx + 0],
+			defaultVerts[vertIdx + 1],
+			defaultVerts[vertIdx + 2]
+		};
+
+		
 
 		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
 		{
 			auto& bone = (*mySkeleton.getJoints())[b + 1];
+			auto currentWeight = weights[i * 17 + b];
 
-			if (!bone->hasDelta)
-				continue;
-			
-			auto weightIdx = i * 17;
-			auto currentWeight = weights[weightIdx + b];
-
-			auto& delta = bone->delta;
-
-			Vector3f vTransformed{ 0,0,0 };
-			delta.transformPoint(vTransformed);
-
-			vTransformed *= currentWeight;
-			v += vTransformed;
+			//bone->transform.transformPoint(v, currentWeight);
 		}
 
+		auto currentVert = &pmodel->vertices[vertIdx];
 		currentVert[0] = v.x;
 		currentVert[1] = v.y;
 		currentVert[2] = v.z;
