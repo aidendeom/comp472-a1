@@ -3549,12 +3549,12 @@ public:
 		return ret;
 	}
 
-	Vector3<T> rotatePoint(const Vector3<T>& v)
+	Vector3<T> rotatePoint(const Vector3<T>& v) const
 	{
 		return rotatePoint(Quaternion<T>{0, v});
 	}
 
-	Vector3<T> rotatePoint(const Quaternion<T>& q)
+	Vector3<T> rotatePoint(const Quaternion<T>& q) const
 	{
 		auto& rot = *this;
 
