@@ -119,8 +119,8 @@ void DefMesh::transformVerts()
 		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
 		{
-			//auto& bone = (*mySkeleton.getJoints())[b + 1];
-			Vector3f vcopy{ v };
+			auto& bone = (*mySkeleton.getJoints())[b + 1];
+			Vector3f vcopy{ v - bone->transform.getLocalPosition() };
 			auto T = transMats[b];
 			auto currentWeight = weights[i * 17 + b];
 
