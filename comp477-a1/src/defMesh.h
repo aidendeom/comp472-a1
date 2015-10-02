@@ -17,7 +17,7 @@ private:
 	int numBones;
 	std::vector<float> weights;
 	std::vector<GLfloat> defaultVerts;
-	float transMats[17][16];
+	std::vector<Matrix4f> transMats;
 
 	void loadWeights(const std::string& path);
 

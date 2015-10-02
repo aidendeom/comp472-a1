@@ -7,6 +7,7 @@
 #include "Transform.h"
 
 DefMesh::DefMesh()
+: transMats{ 17 }
 {
 	mySkeleton.loadSkeleton("./resources/skeleton.out");
 	loadWeights("./resources/weights.out");
@@ -78,10 +79,22 @@ void DefMesh::updateTransMats()
 		if (!bone->hasDelta)
 			continue;
 
-		auto T = bone->transform.getWorldRotation().inverted().transform();
-		//for (size_t i = 0; i < 16; i++)
-		//	transMats[b][i] = T[i];
+ 		auto rot = bone->transform.getLocalRotation();
+		//rot.invert();
+		auto T = rot.transform();
+
+		transMats[b - 1] = T;
 	}
+}
+
+void matMul(float* m, float* v)
+{
+	float x = v[0];
+	float y = v[1];
+	float z = v[2];
+	float w = 1;
+
+
 }
 
 void DefMesh::transformVerts()
@@ -101,21 +114,27 @@ void DefMesh::transformVerts()
 			defaultVerts[vertIdx + 2]
 		};
 
-		
+		Vector3f vAccum{ v };
 
 		// TODO: Un-hardcode this value
 		for (size_t b = 0; b < 17; b++)
 		{
-			auto& bone = (*mySkeleton.getJoints())[b + 1];
+			//auto& bone = (*mySkeleton.getJoints())[b + 1];
+			Vector3f vcopy{ v };
+			auto T = transMats[b];
 			auto currentWeight = weights[i * 17 + b];
+
+			vcopy = (T * vcopy);
+			vcopy *= currentWeight;
+			vAccum += vcopy;
 
 			//bone->transform.transformPoint(v, currentWeight);
 		}
 
 		auto currentVert = &pmodel->vertices[vertIdx];
-		currentVert[0] = v.x;
-		currentVert[1] = v.y;
-		currentVert[2] = v.z;
+		currentVert[0] = vAccum.x;
+		currentVert[1] = vAccum.y;
+		currentVert[2] = vAccum.z;
 	}
 }
 
