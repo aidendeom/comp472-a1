@@ -14,7 +14,6 @@
 class DefMesh
 {
 private:
-	int numBones;
 	std::vector<float> weights;
 	std::vector<GLfloat> defaultVerts;
 	std::vector<Matrix4f> transMats;
@@ -23,6 +22,7 @@ private:
 
 	// Vert transformation methods
 	void transformVerts();
+	Vector4f transformVert(const Vector4f& p, const int vertIdx) const;
 	void updateTransMats();
 
 public:

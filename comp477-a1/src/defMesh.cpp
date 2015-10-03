@@ -79,7 +79,7 @@ void DefMesh::updateTransMats()
 		if (!bone->hasDelta)
 			continue;
 
- 		auto rot = bone->transform.getLocalRotation();
+ 		auto rot = bone->transform.getWorldRotation();
 		//rot.invert();
 		auto T = rot.transform();
 
@@ -87,55 +87,59 @@ void DefMesh::updateTransMats()
 	}
 }
 
-void matMul(float* m, float* v)
-{
-	float x = v[0];
-	float y = v[1];
-	float z = v[2];
-	float w = 1;
-
-
-}
-
 void DefMesh::transformVerts()
 {
-	auto verts = pmodel->vertices;
+	//auto& bone = (*mySkeleton.getJoints())[b + 1];
+	//auto currentWeight = weights[i * 17 + b];
+	//auto vertIdx = (i + 1) * 3;
+
 	updateTransMats();
 
 	for (GLuint i = 0; i < pmodel->numvertices; i++)
 	{
-		// The vert index is 1-based, not 0-based
+		// Vertices start at idx 1
 		auto vertIdx = (i + 1) * 3;
 
-		Vector3f v
+		// Homogenous coordinate
+		Vector4f p
 		{
 			defaultVerts[vertIdx + 0],
 			defaultVerts[vertIdx + 1],
-			defaultVerts[vertIdx + 2]
+			defaultVerts[vertIdx + 2],
+			1
 		};
 
-		Vector3f vAccum{ v };
+		auto pTrans = transformVert(p,i);
 
-		// TODO: Un-hardcode this value
-		for (size_t b = 0; b < 17; b++)
-		{
-			auto& bone = (*mySkeleton.getJoints())[b + 1];
-			Vector3f vcopy{ v - bone->transform.getLocalPosition() };
-			auto T = transMats[b];
-			auto currentWeight = weights[i * 17 + b];
-
-			vcopy = (T * vcopy);
-			vcopy *= currentWeight;
-			vAccum += vcopy;
-
-			//bone->transform.transformPoint(v, currentWeight);
-		}
-
-		auto currentVert = &pmodel->vertices[vertIdx];
-		currentVert[0] = vAccum.x;
-		currentVert[1] = vAccum.y;
-		currentVert[2] = vAccum.z;
+		auto vert = &pmodel->vertices[vertIdx];
+		vert[0] = pTrans.x;
+		vert[1] = pTrans.y;
+		vert[2] = pTrans.z;
 	}
+
+}
+
+Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) const
+{
+	auto& joints = *mySkeleton.getJoints();
+
+	// Assumes there is at least one bone
+	const int numBones = joints.size() - 1;
+
+	Vector4f sum{ 0, 0, 0, 1 };
+
+	for (auto j = 0; j < numBones; j++)
+	{
+		auto currentWeight = weights[vertIdx * 17 + j];
+		auto& T = transMats[j];
+
+		auto transP = T * p;
+		transP *= currentWeight;
+
+		sum += transP;
+	}
+
+	return sum;
 }
 
 void DefMesh::resetSkeletonDeltas()

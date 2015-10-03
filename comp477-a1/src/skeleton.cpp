@@ -107,7 +107,7 @@ void Skeleton::glDrawTransformHierarchy(Joint& root)
 	    glColor3f(1.0f, 0.0f, 0.0f);
 	else if (root.isHovered)
 	    glColor3f(0.7f, 0.7f, 0.7f);
-	
+
 	glTranslatef(pos.x, pos.y, pos.z);
 
 	glutSolidSphere(0.01, 15, 15);

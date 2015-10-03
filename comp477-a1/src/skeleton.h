@@ -97,8 +97,6 @@ public:
 
 	Joint* getSelectedJoint();
 
-	int getNumJoints() const;
-
 	const std::vector<std::unique_ptr<Joint>>* getJoints() const;
 
 	void resetDeltas() const;

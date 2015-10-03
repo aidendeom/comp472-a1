@@ -511,7 +511,7 @@ void display()
 	myDefMesh.resetSkeletonDeltas();
     
     glPopMatrix();
-    
+
 	// Drawing reference coord system
 	const int length = 3;
 	const GLfloat r[]{ 1, 0, 0, 1 };
