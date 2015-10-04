@@ -14,12 +14,25 @@ private:
 	Quatf localRotation;
 	Vector3f localScale;
 
+	// Cached, so it does not have to calculate multiple times per frame
+	Vector3f worldPosition;
+	Quatf worldRotation;
+	Vector3f worldScale;
+
+	bool worldPosGood;
+	bool worldRotGood;
+	bool worldScaleGood;
+
 	Transform* parent;
 	std::vector<Transform*> children;
 
 	Joint* containingJoint;
 
-	size_t numChildren;
+	void updateWorldPosition();
+	void updateWorldRotation();
+
+	void propogateSetWorldPosGood(bool good);
+	void propogateSetWorldRotGood(bool good);
 
 public:
 	Transform();
@@ -34,11 +47,11 @@ public:
 	Quatf getLocalRotation() const;
 	void setLocalRotation(const Quatf& rot);
 
-	Quatf getWorldRotation() const;
-	void setWorldRotation(const Quatf& rot);
-
-	Vector3f getWorldPosition() const;
+	Vector3f getWorldPosition();
 	void setWorldPosition(const Vector3f& pos);
+
+	Quatf getWorldRotation();
+	void setWorldRotation(const Quatf& rot);
 
 	std::vector<Transform*>& getChildren();
 	void addChild(Transform* child);

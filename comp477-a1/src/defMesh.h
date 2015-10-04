@@ -22,7 +22,7 @@ private:
 
 	// Vert transformation methods
 	void transformVerts();
-	Vector4f transformVert(const Vector4f& p, const int vertIdx) const;
+	Vector3f transformVert(const Vector3f& p, const int vertIdx); //const;
 	void updateTransMats();
 
 public:

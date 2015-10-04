@@ -1,8 +1,5 @@
 #include "defMesh.h"
 
-#include <string>
-#include <iostream>
-
 #include "WeightFileReader.h"
 #include "Transform.h"
 
@@ -12,7 +9,7 @@ DefMesh::DefMesh()
 	mySkeleton.loadSkeleton("./resources/skeleton.out");
 	loadWeights("./resources/weights.out");
 
-    pmodel = NULL;
+    pmodel = nullptr;
     if (!pmodel) {	/* load up the model */
 
     char meshFile[] = "./resources/cheb.obj";
@@ -79,6 +76,7 @@ void DefMesh::updateTransMats()
 		if (!bone->hasDelta)
 			continue;
 
+		auto translation = bone->transform.getLocalPosition();
  		auto rot = bone->transform.getWorldRotation();
 		//rot.invert();
 		auto T = rot.transform();
@@ -101,12 +99,12 @@ void DefMesh::transformVerts()
 		auto vertIdx = (i + 1) * 3;
 
 		// Homogenous coordinate
-		Vector4f p
+		Vector3f p
 		{
 			defaultVerts[vertIdx + 0],
 			defaultVerts[vertIdx + 1],
-			defaultVerts[vertIdx + 2],
-			1
+			defaultVerts[vertIdx + 2]//,
+			//1
 		};
 
 		auto pTrans = transformVert(p,i);
@@ -116,29 +114,32 @@ void DefMesh::transformVerts()
 		vert[1] = pTrans.y;
 		vert[2] = pTrans.z;
 	}
-
 }
 
-Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) const
+Vector3f DefMesh::transformVert(const Vector3f& p, const int vertIdx) //const
 {
 	auto& joints = *mySkeleton.getJoints();
 
 	// Assumes there is at least one bone
 	const int numBones = joints.size() - 1;
 
-	Vector4f sum{ 0, 0, 0, 1 };
+	Vector3f sum{ 0, 0, 0 };//, 1
 
 	for (auto j = 0; j < numBones; j++)
 	{
-		auto currentWeight = weights[vertIdx * 17 + j];
-		auto& T = transMats[j];
+		// Disregard root joint - it's not a bone
+		auto& bone = joints[j + 1];
+		auto ppos = bone->transform.getParent()->getWorldPosition();
 
-		auto transP = T * p;
+		auto currentWeight = weights[vertIdx * 17 + j];
+
+		//auto T = transMats[j];
+
+		auto transP = bone->transform.getWorldRotation().rotatePoint(p - ppos) + ppos;
 		transP *= currentWeight;
 
 		sum += transP;
 	}
-
 	return sum;
 }
 

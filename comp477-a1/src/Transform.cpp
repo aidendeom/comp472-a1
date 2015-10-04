@@ -2,13 +2,18 @@
 
 #include <algorithm>
 
-Transform::Transform() :
-localPosition{ 0, 0, 0 },
-localRotation{ 1, 0, 0, 0 },
-localScale{ 1, 1, 1 },
-parent{ nullptr },
-containingJoint{ nullptr },
-numChildren{ 0 }
+Transform::Transform()
+: localPosition{ 0, 0, 0 }
+, localRotation{ 1, 0, 0, 0 }
+, localScale{ 1, 1, 1 }
+, worldPosition{ 0, 0, 0 }
+, worldRotation{ 1, 0, 0, 0 }
+, worldScale{ 1, 1, 1 }
+, worldPosGood{ true }
+, worldRotGood{ true }
+, worldScaleGood{ true }
+, parent{ nullptr }
+, containingJoint{ nullptr }
 {}
 
 
@@ -45,17 +50,16 @@ Vector3f Transform::getLocalPosition() const
 void Transform::setLocalPosition(const Vector3f& pos)
 {
 	localPosition = pos;
+	propogateSetWorldPosGood(false);
+	//worldPosGood = false;
 }
 
-Vector3f Transform::getWorldPosition() const
+Vector3f Transform::getWorldPosition()
 {
-	auto parentWorldPos = parent == nullptr
-		? Vector3f{ 0, 0, 0 }
-		: parent->getWorldPosition();
+	if (!worldPosGood)
+		updateWorldPosition();
 
-	auto pos = getWorldRotation().rotatePoint(localPosition);
-
-	return parentWorldPos + pos;
+	return worldPosition;
 }
 
 void Transform::setWorldPosition(const Vector3f& pos)
@@ -69,6 +73,9 @@ void Transform::setWorldPosition(const Vector3f& pos)
 		auto parentWorldPos = parent->getWorldPosition();
 		localPosition = pos - parentWorldPos;
 	}
+
+	worldPosition = pos;
+	worldPosGood = true;
 }
 
 Quatf Transform::getLocalRotation() const
@@ -82,20 +89,24 @@ void Transform::setLocalRotation(const Quatf& rot)
 		std::cout << "rotation has 0 length" << std::endl;
 
 	localRotation = rot.normalized();
+
+	propogateSetWorldPosGood(false);
+	propogateSetWorldRotGood(false);
+	//worldRotGood = false;
 }
 
-Quatf Transform::getWorldRotation() const
+Quatf Transform::getWorldRotation()
 {
-	auto parentWorldRot = parent == nullptr
-		? Quatf{ 1, 0, 0, 0 }
-		: parent->getWorldRotation();
+	if (!worldRotGood)
+		updateWorldRotation();
 
-	return localRotation * parentWorldRot;
+	return worldRotation;
 }
 
 void Transform::setWorldRotation(const Quatf& rot)
 {
-
+	worldRotation = rot;
+	worldRotGood = true;
 }
 
 std::vector<Transform*>& Transform::getChildren()
@@ -140,4 +151,48 @@ void Transform::reset()
 	localPosition = Vector3f{ 0, 0, 0 };
 	localRotation = Quatf{ 1, 0, 0, 0 };
 	localScale = Vector3f{ 1, 1, 1 };
+}
+
+void Transform::updateWorldPosition()
+{
+	auto parentWorldPos = parent == nullptr
+		? Vector3f{ 0, 0, 0 }
+	: parent->getWorldPosition();
+
+	auto pos = getWorldRotation().rotatePoint(localPosition);
+
+	worldPosition = parentWorldPos + pos;
+
+	worldPosGood = true;
+}
+
+void Transform::updateWorldRotation()
+{
+	auto parentWorldRot = parent == nullptr
+		? Quatf{ 1, 0, 0, 0 }
+	: parent->getWorldRotation();
+
+	worldRotation = localRotation * parentWorldRot;
+
+	worldRotGood = true;
+}
+
+void Transform::propogateSetWorldPosGood(bool good)
+{
+	worldPosGood = good;
+	for (auto& t : children)
+	{
+		t->worldPosGood = good;
+		t->propogateSetWorldPosGood(good);
+	}
+}
+
+void Transform::propogateSetWorldRotGood(bool good)
+{
+	worldRotGood = good;
+	for (auto& t : children)
+	{
+		t->worldRotGood = good;
+		t->propogateSetWorldRotGood(good);
+	}
 }
