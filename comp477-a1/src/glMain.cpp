@@ -479,7 +479,7 @@ void mouseMoveEvent(int x, int y)
 		auto newRot = rot * j.transform.getLocalRotation();
 
 		// Set the delta for this frame
-		j.delta.setLocalRotation(rot);
+		//j.delta.setLocalRotation(rot);
 		j.setDelta(true);
 
 		j.transform.setLocalRotation(newRot);

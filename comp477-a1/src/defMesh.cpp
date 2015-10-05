@@ -4,7 +4,7 @@
 #include "Transform.h"
 
 DefMesh::DefMesh()
-: transMats{ 17 }
+	: transMats( 17 )
 {
 	mySkeleton.loadSkeleton("./resources/skeleton.out");
 	loadWeights("./resources/weights.out");
@@ -50,7 +50,9 @@ void DefMesh::glDraw(int type)
     case 1:
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
     case 2:
-        mySkeleton.glDrawSkeleton(); return;
+		//mySkeleton.drawskel();
+        mySkeleton.glDrawSkeleton();
+		return;
     
     }
     glColor3f(0.5, 0.5, 0.5);
@@ -64,22 +66,30 @@ void DefMesh::glDraw(int type)
     glPopMatrix();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
+	//mySkeleton.drawskel();
     mySkeleton.glDrawSkeleton();
 }
 
 void DefMesh::updateTransMats()
 {
+	auto& joints = *mySkeleton.getJoints();
+
 	for (size_t b = 1; b < 18; b++)
 	{
-		auto& bone = (*mySkeleton.getJoints())[b];
+		auto& bone = *joints[b].get();
 
-		if (!bone->hasDelta)
-			continue;
+		//if (!bone->hasDelta)
+		//	continue;
 
-		auto translation = bone->transform.getLocalPosition();
- 		auto rot = bone->transform.getWorldRotation();
-		//rot.invert();
-		auto T = rot.transform();
+		auto& parent = *bone.transform.getParent();
+		auto pPos = parent.getWorldPosition();
+
+		auto toParent = Matrix4f::createTranslation(pPos.x, pPos.y, pPos.z);
+		auto toParentNeg = Matrix4f::createTranslation(-pPos.x, -pPos.y, -pPos.z);
+
+		auto rot = bone.transform.getLocalRotation().transform();
+
+		auto T = toParent * rot * toParentNeg;
 
 		transMats[b - 1] = T;
 	}
@@ -87,10 +97,6 @@ void DefMesh::updateTransMats()
 
 void DefMesh::transformVerts()
 {
-	//auto& bone = (*mySkeleton.getJoints())[b + 1];
-	//auto currentWeight = weights[i * 17 + b];
-	//auto vertIdx = (i + 1) * 3;
-
 	updateTransMats();
 
 	for (GLuint i = 0; i < pmodel->numvertices; i++)
@@ -99,12 +105,12 @@ void DefMesh::transformVerts()
 		auto vertIdx = (i + 1) * 3;
 
 		// Homogenous coordinate
-		Vector3f p
+		Vector4f p
 		{
 			defaultVerts[vertIdx + 0],
 			defaultVerts[vertIdx + 1],
-			defaultVerts[vertIdx + 2]//,
-			//1
+			defaultVerts[vertIdx + 2],
+			1
 		};
 
 		auto pTrans = transformVert(p,i);
@@ -116,14 +122,14 @@ void DefMesh::transformVerts()
 	}
 }
 
-Vector3f DefMesh::transformVert(const Vector3f& p, const int vertIdx) //const
+Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) //const
 {
 	auto& joints = *mySkeleton.getJoints();
 
 	// Assumes there is at least one bone
 	const int numBones = joints.size() - 1;
 
-	Vector3f sum{ 0, 0, 0 };//, 1
+	Vector4f sum{ 0, 0, 0, 0};
 
 	for (auto j = 0; j < numBones; j++)
 	{
@@ -133,13 +139,14 @@ Vector3f DefMesh::transformVert(const Vector3f& p, const int vertIdx) //const
 
 		auto currentWeight = weights[vertIdx * 17 + j];
 
-		//auto T = transMats[j];
-
-		auto transP = bone->transform.getWorldRotation().rotatePoint(p - ppos) + ppos;
+		auto T = transMats[j];
+		auto transP = T * p;
+		//auto transP = bone->transform.getWorldRotation().rotatePoint(p - ppos) + ppos;
 		transP *= currentWeight;
 
 		sum += transP;
 	}
+
 	return sum;
 }
 

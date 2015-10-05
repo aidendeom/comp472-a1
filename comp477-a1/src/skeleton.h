@@ -28,11 +28,13 @@ struct Joint
     bool isHovered;
     bool isPicked;
 	bool hasDelta;
+	int index;
     
 	Joint() :
 		isHovered{ false },
 		isPicked{ false },
-		hasDelta{ false }
+		hasDelta{ false },
+		index{ -1 }
 	{
 		transform.setJoint(this);
 	}
@@ -66,7 +68,7 @@ private:
 public:
     /*True if the skeleton has a joint selected*/
     bool hasJointSelected;   
-    Skeleton() : 
+	Skeleton() :
 		hasJointSelected{ false }
 	{};
     /*
@@ -100,6 +102,8 @@ public:
 	const std::vector<std::unique_ptr<Joint>>* getJoints() const;
 
 	void resetDeltas() const;
+
+	void drawskel();
 };
 
 #endif

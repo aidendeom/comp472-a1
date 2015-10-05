@@ -37,7 +37,7 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 				std::stof(boneParams[2]),
 				std::stof(boneParams[3])
 			};
-
+			temp->index = joints.size() - 1;
 			trans.setWorldPosition(worldPos);
 			temp->originalTransform.setWorldPosition(worldPos);
 
@@ -85,18 +85,29 @@ void Skeleton::glDrawSkeleton()
     glEnable(GL_DEPTH_TEST);
 }
 
+void Skeleton::drawskel()
+{
+	for (auto& j : joints)
+	{
+		auto& pos = j->transform.getWorldPosition();
+		glTranslatef(pos.x, pos.y, pos.z);
+		glutSolidCube(0.05);
+		glTranslatef(-pos.x, -pos.y, -pos.z);
+	}
+}
+
 void Skeleton::glDrawTransformHierarchy(Joint& root)
 {
 	glPushMatrix();
 
 	auto& rot = root.transform.getWorldRotation();
-	auto pos = rot.rotatePoint(root.transform.getLocalPosition());
+	auto& pos = rot.rotatePoint(root.transform.getLocalPosition());
 
 	glColor3f(0.3f, 0.3f, 0.3f);
 
 	if (root.transform.getParent() != nullptr)
 	{
-		glLineWidth(2.5);
+		glLineWidth(1);
 		glBegin(GL_LINES);
 		glVertex3i(0, 0, 0);
 		glVertex3f(pos.x, pos.y, pos.z);
@@ -109,7 +120,7 @@ void Skeleton::glDrawTransformHierarchy(Joint& root)
 	    glColor3f(0.7f, 0.7f, 0.7f);
 
 	glTranslatef(pos.x, pos.y, pos.z);
-
+	
 	glutSolidSphere(0.01, 15, 15);
 
 	for (auto c : root.transform.getChildren())
