@@ -50,7 +50,6 @@ void DefMesh::glDraw(int type)
     case 1:
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
     case 2:
-		//mySkeleton.drawskel();
         mySkeleton.glDrawSkeleton();
 		return;
     
@@ -66,7 +65,6 @@ void DefMesh::glDraw(int type)
     glPopMatrix();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
-	//mySkeleton.drawskel();
     mySkeleton.glDrawSkeleton();
 }
 
@@ -122,9 +120,6 @@ Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) //const
 
 	for (auto j = 0; j < numBones; j++)
 	{
-		// Disregard root joint - it's not a bone
-		auto& bone = joints[j + 1];
-
 		auto currentWeight = weights[vertIdx * 17 + j];
 
 		auto transP = transMats[j] * p;
