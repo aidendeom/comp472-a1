@@ -131,7 +131,7 @@ Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) //const
 	return sum;
 }
 
-void DefMesh::resetSkeletonDeltas()
+void DefMesh::resetSkeletonDeltas() const
 {
 	mySkeleton.resetDeltas();
 }

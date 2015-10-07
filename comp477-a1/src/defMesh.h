@@ -33,6 +33,6 @@ public:
 	~DefMesh();
 
     void glDraw(int type);
-	void resetSkeletonDeltas();
+	void resetSkeletonDeltas() const;
 };
 #endif
