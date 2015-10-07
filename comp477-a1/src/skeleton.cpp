@@ -2,10 +2,17 @@
 #include "splitstring.h"
 #include <cmath>
 #include <iostream>
+#include <fstream>
 
-// uncomment to disable assert()
-// #define NDEBUG
-#include <cassert>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#ifdef _WIN32
+#include "GL/glut.h"
+#else
+#include <GL/freeglut.h>
+#endif
+#endif
 
 /*
  * Load skeleton file
@@ -37,9 +44,8 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 				std::stof(boneParams[2]),
 				std::stof(boneParams[3])
 			};
-			temp->index = joints.size() - 1;
+
 			trans.setWorldPosition(worldPos);
-			temp->originalTransform.setWorldPosition(worldPos);
 
 			auto parentIdx = std::stoi(boneParams[4]);
 
@@ -85,23 +91,12 @@ void Skeleton::glDrawSkeleton()
     glEnable(GL_DEPTH_TEST);
 }
 
-void Skeleton::drawskel()
-{
-	for (auto& j : joints)
-	{
-		auto& pos = j->transform.getWorldPosition();
-		glTranslatef(pos.x, pos.y, pos.z);
-		glutSolidCube(0.05);
-		glTranslatef(-pos.x, -pos.y, -pos.z);
-	}
-}
-
-void Skeleton::glDrawTransformHierarchy(Joint& root)
+void Skeleton::glDrawTransformHierarchy(Joint& root) const
 {
 	glPushMatrix();
 
-	auto& rot = root.transform.getWorldRotation();
-	auto& pos = rot.rotatePoint(root.transform.getLocalPosition());
+	auto rot = root.transform.getWorldRotation();
+	auto pos = rot.rotatePoint(root.transform.getLocalPosition());
 
 	glColor3f(0.3f, 0.3f, 0.3f);
 
@@ -145,23 +140,22 @@ void Skeleton::updateScreenCoord()
     glGetIntegerv( GL_VIEWPORT, viewport );
     for (unsigned i=0; i<joints.size(); i++)
     {
-		auto& pos = joints[i]->transform.getWorldPosition();
-        gluProject((GLdouble)pos.x, (GLdouble)pos.y, (GLdouble)pos.z,
+		auto pos = joints[i]->transform.getWorldPosition();
+        gluProject(pos.x, pos.y, pos.z,
                 modelview, projection, viewport,
                 &winX, &winY, &winZ );
         joints[i]->screenCoord.x = static_cast<int>(winX);
-		joints[i]->screenCoord.y = static_cast<int>((double)glutGet(GLUT_WINDOW_HEIGHT) - winY);
+		joints[i]->screenCoord.y = static_cast<int>(static_cast<double>(glutGet(GLUT_WINDOW_HEIGHT)) - winY);
     }
 }
 void Skeleton::checkHoveringStatus(int x, int y)
 {
-    double distance = 0.0f;
-    double minDistance = 1000.0f;
-    int hoveredJoint = -1;
-    for(unsigned i=0; i < joints.size(); i++)
+	auto minDistance = 1000.0;
+	auto hoveredJoint = -1;
+	for (unsigned i = 0; i < joints.size(); i++)
     {
         joints[i]->isHovered = false;
-        distance = sqrt((x - joints[i]->screenCoord.x)*(x - joints[i]->screenCoord.x) 
+        auto distance = sqrt((x - joints[i]->screenCoord.x)*(x - joints[i]->screenCoord.x) 
                 + (y - joints[i]->screenCoord.y)*(y - joints[i]->screenCoord.y));
         if (distance > 50) continue;
         if (distance < minDistance)
@@ -175,28 +169,28 @@ void Skeleton::checkHoveringStatus(int x, int y)
 
 void Skeleton::release()
 {
-    hasJointSelected = false;
-    for (unsigned i=0; i<joints.size(); i++)
-    {
-        joints[i]->isPicked = false;
-    }
+	hasJointSelected = false;
+	for (unsigned i = 0; i < joints.size(); i++)
+	{
+		joints[i]->isPicked = false;
+	}
 }
 
 void Skeleton::selectOrReleaseJoint()
 {
-    bool hasHovered=false;
-    for (unsigned i=0; i<joints.size(); i++)
-    {
-        joints[i]->isPicked = false;
-        if (joints[i]->isHovered)
-        {
-            hasHovered = true;
-            joints[i]->isPicked = true;
-            hasJointSelected = true;
-        }
-    }
-    if (!hasHovered)    //Release joint
-        hasJointSelected = false;
+	auto hasHovered = false;
+	for (unsigned i = 0; i < joints.size(); i++)
+	{
+		joints[i]->isPicked = false;
+		if (joints[i]->isHovered)
+		{
+			hasHovered = true;
+			joints[i]->isPicked = true;
+			hasJointSelected = true;
+		}
+	}
+	if (!hasHovered) //Release joint
+		hasJointSelected = false;
 }
 
 Joint* Skeleton::getSelectedJoint()
@@ -216,8 +210,6 @@ const std::vector<std::unique_ptr<Joint>>* Skeleton::getJoints() const
 
 void Skeleton::resetDeltas() const
 {
-	for (auto& j : joints)
-	{
-		j->resetDelta();
-	}
+	// Set the root, which recursively sets the children
+	joints[0]->setDelta(false);
 }

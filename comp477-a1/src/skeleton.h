@@ -1,29 +1,14 @@
 #ifndef SKELETON_H
 #define SKELETON_H
+
 #include <vector>
-#include <string>
-#include <fstream>
-#include <cstdlib>
 #include <memory>
 
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#ifdef _WIN32
-#include "GL/glut.h"
-#else
-#include <GL/freeglut.h>
-#endif
-#endif
-
-#include "simpleMath.h"
 #include "Transform.h"
 
 struct Joint
 {
 	Transform transform;
-	Transform originalTransform;
-	Transform delta;
     Vector2i screenCoord;
     bool isHovered;
     bool isPicked;
@@ -33,8 +18,7 @@ struct Joint
 	Joint() :
 		isHovered{ false },
 		isPicked{ false },
-		hasDelta{ false },
-		index{ -1 }
+		hasDelta{ false }
 	{
 		transform.setJoint(this);
 	}
@@ -47,12 +31,6 @@ struct Joint
 			t->getJoint()->setDelta(delta);
 		}
 	}
-
-	void resetDelta()
-	{
-		delta.reset();
-		hasDelta = false;
-	}
 };
 
 class Skeleton
@@ -62,8 +40,6 @@ private:
 
     /*Update screen coordinates of joints*/
     void updateScreenCoord();
-	
-	void printSkeletonHierarchy();
     
 public:
     /*True if the skeleton has a joint selected*/
@@ -86,7 +62,7 @@ public:
      */
     void glDrawSkeleton();
 
-	void glDrawTransformHierarchy(Joint& root);
+	void glDrawTransformHierarchy(Joint& root) const;
 
     /*
      * Check if any joint is hovered by given mouse coordinate
@@ -102,8 +78,6 @@ public:
 	const std::vector<std::unique_ptr<Joint>>* getJoints() const;
 
 	void resetDeltas() const;
-
-	void drawskel();
 };
 
 #endif
