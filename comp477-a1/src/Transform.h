@@ -45,7 +45,7 @@ private:
 
 	// Cached, so it does not have to calculate multiple times per frame
 	// We declare these as mutable, so functions like getWorldPos can update 
-	// them when necessary
+	// them when necessary, but still be declared const
 	mutable Vector3f worldPosition;
 	mutable Quatf worldRotation;
 	mutable Vector3f worldScale;
