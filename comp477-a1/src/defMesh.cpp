@@ -4,7 +4,7 @@
 #include "Transform.h"
 
 DefMesh::DefMesh()
-	: transMats( 17 )
+	: transMats(17)
 {
 	mySkeleton.loadSkeleton("./resources/skeleton.out");
 	loadWeights("./resources/weights.out");
@@ -78,20 +78,10 @@ void DefMesh::updateTransMats()
 	{
 		auto& bone = *joints[b].get();
 
-		//if (!bone->hasDelta)
-		//	continue;
+		if (!bone.hasDelta)
+			continue;
 
-		auto& parent = *bone.transform.getParent();
-		auto pPos = parent.getWorldPosition();
-
-		auto toParent = Matrix4f::createTranslation(pPos.x, pPos.y, pPos.z);
-		auto toParentNeg = Matrix4f::createTranslation(-pPos.x, -pPos.y, -pPos.z);
-
-		auto rot = bone.transform.getLocalRotation().transform();
-
-		auto T = toParent * rot * toParentNeg;
-
-		transMats[b - 1] = T;
+		transMats[b - 1] = bone.transform.getMatrix();
 	}
 }
 
@@ -126,7 +116,6 @@ Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) //const
 {
 	auto& joints = *mySkeleton.getJoints();
 
-	// Assumes there is at least one bone
 	const int numBones = joints.size() - 1;
 
 	Vector4f sum{ 0, 0, 0, 0};
@@ -135,13 +124,10 @@ Vector4f DefMesh::transformVert(const Vector4f& p, const int vertIdx) //const
 	{
 		// Disregard root joint - it's not a bone
 		auto& bone = joints[j + 1];
-		auto ppos = bone->transform.getParent()->getWorldPosition();
 
 		auto currentWeight = weights[vertIdx * 17 + j];
 
-		auto T = transMats[j];
-		auto transP = T * p;
-		//auto transP = bone->transform.getWorldRotation().rotatePoint(p - ppos) + ppos;
+		auto transP = transMats[j] * p;
 		transP *= currentWeight;
 
 		sum += transP;

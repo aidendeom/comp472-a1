@@ -63,5 +63,7 @@ public:
 	void transformPoint(Vector3f& p, float weight) const;
 
 	void reset();
+
+	auto getMatrix() -> Matrix4f;
 };
 

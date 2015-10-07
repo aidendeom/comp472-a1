@@ -11,8 +11,12 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
+#include <csignal>
+
 #include "skeleton.h"
 #include "defMesh.h"
+
+
 using namespace std;
 
 

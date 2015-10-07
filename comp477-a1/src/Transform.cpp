@@ -196,3 +196,20 @@ void Transform::propogateSetWorldRotGood(bool good)
 		t->propogateSetWorldRotGood(good);
 	}
 }
+
+auto Transform::getMatrix() -> Matrix4f
+{
+	auto parentMat = parent == nullptr
+		? Matrix4f::createTranslation(0, 0, 0)
+		: parent->getMatrix();
+
+	auto parentPos = parent == nullptr
+		? Vector3f{ 0, 0, 0 }
+		: parent->getWorldPosition();
+
+	auto toParentNeg	= Matrix4f::createTranslation(-parentPos.x, -parentPos.y, -parentPos.z);
+	auto toParent		= Matrix4f::createTranslation(parentPos.x, parentPos.y, parentPos.z);
+	auto rot			= localRotation.transform();
+
+	return toParent * rot * toParentNeg * parentMat;
+}
