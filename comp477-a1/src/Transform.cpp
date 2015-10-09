@@ -38,7 +38,7 @@ auto Transform::getParent() const -> Transform*
 
 auto Transform::setParent(Transform* newParent) -> void
 {
-	auto worldPos = getWorldPosition();
+	//auto worldPos = getWorldPosition();
 
 	// If this Transform has a parent, remove it from the parent's list of children
 	if (parent != nullptr)
@@ -47,7 +47,7 @@ auto Transform::setParent(Transform* newParent) -> void
 	// Set the new parent
 	parent = newParent;
 	parent->addChild(this);
-	setWorldPosition(worldPos);
+	//setWorldPosition(worldPos);
 }
 
 auto Transform::getLocalPosition() const -> Vector3f
@@ -168,7 +168,7 @@ auto Transform::getMatrix() const -> Matrix4f
 	auto toParent = Matrix4f::createTranslation(parentPos.x, parentPos.y, parentPos.z);
 	auto rot = localRotation.transform();
 
-	return toParent * rot * toParentNeg * parentMat;
+	return (toParent * rot * toParentNeg) * parentMat;
 }
 
 ///////////////////////////////////////
@@ -177,11 +177,15 @@ auto Transform::getMatrix() const -> Matrix4f
 
 auto Transform::updateWorldPosition() const -> void
 {
+	auto parentWorldRot = parent == nullptr
+		? Quatf{ 1, 0, 0, 0 }
+	: parent->getWorldRotation();
+
+	auto pos = parentWorldRot.rotatePoint(localPosition);
+
 	auto parentWorldPos = parent == nullptr
 		? Vector3f{ 0, 0, 0 }
 	: parent->getWorldPosition();
-
-	auto pos = getWorldRotation().rotatePoint(localPosition);
 
 	worldPosition = parentWorldPos + pos;
 

@@ -38,19 +38,23 @@ void Skeleton::loadSkeleton(std::string skelFileName)
 			auto& temp = joints.back();
 			auto& trans = temp->transform;
 
+			// Set parent (if exists)
+			auto parentIdx = std::stoi(boneParams[4]);
+			if (parentIdx > -1)
+				trans.setParent(&joints[parentIdx]->transform);
+
+			// Set local position
 			Vector3f worldPos
 			{
 				std::stof(boneParams[1]),
 				std::stof(boneParams[2]),
 				std::stof(boneParams[3])
 			};
-
-			trans.setWorldPosition(worldPos);
-
-			auto parentIdx = std::stoi(boneParams[4]);
-
-			if (parentIdx > -1)
-				trans.setParent(&joints[parentIdx]->transform);
+			auto parent = trans.getParent();
+			Vector3f parentPos{ 0, 0, 0 };
+			if (parent)
+				parentPos = parent->getWorldPosition();
+			trans.setLocalPosition(worldPos - parentPos);
 
 			if (std::stoi(boneParams[0]) + 1 != joints.size())
             {
@@ -91,16 +95,20 @@ void Skeleton::glDrawSkeleton()
     glEnable(GL_DEPTH_TEST);
 }
 
-void Skeleton::glDrawTransformHierarchy(Joint& root) const
+void Skeleton::glDrawTransformHierarchy(Joint& joint) const
 {
 	glPushMatrix();
 
-	auto rot = root.transform.getWorldRotation();
-	auto pos = rot.rotatePoint(root.transform.getLocalPosition());
+	auto rot = joint.transform.getLocalRotation().transform();
+	auto pos = joint.transform.getLocalPosition();
+	//auto rot = joint.transform.getParent()
+	//	? joint.transform.getParent()->getWorldRotation()
+	//	: Quatf{ 1, 0, 0, 0 };
+	//auto pos = rot.rotatePoint(joint.transform.getLocalPosition());
 
 	glColor3f(0.3f, 0.3f, 0.3f);
 
-	if (root.transform.getParent() != nullptr)
+	if (joint.transform.getParent() != nullptr)
 	{
 		glLineWidth(1);
 		glBegin(GL_LINES);
@@ -109,16 +117,17 @@ void Skeleton::glDrawTransformHierarchy(Joint& root) const
 		glEnd();
 	}
 
-	if (root.isPicked)
+	if (joint.isPicked)
 	    glColor3f(1.0f, 0.0f, 0.0f);
-	else if (root.isHovered)
+	else if (joint.isHovered)
 	    glColor3f(0.7f, 0.7f, 0.7f);
 
 	glTranslatef(pos.x, pos.y, pos.z);
+	glMultMatrixf(rot);
 	
 	glutSolidSphere(0.01, 15, 15);
 
-	for (auto c : root.transform.getChildren())
+	for (auto c : joint.transform.getChildren())
 	{
 		glDrawTransformHierarchy(*c->getJoint());
 	}
