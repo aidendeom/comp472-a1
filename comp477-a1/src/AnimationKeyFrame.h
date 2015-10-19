@@ -2,17 +2,17 @@
 
 #include <vector>
 #include "vmath\vmath.h"
-#include "skeleton.h"
+
+struct Joint;
 
 class AnimationKeyFrame
 {
 public:
+	std::vector<Quatf> orientations;
+
 	AnimationKeyFrame();
 	~AnimationKeyFrame();
 
 	auto capture(const std::vector<Joint>& joints) -> void;
-
-private:
-	std::vector<Quatf> orientations;
 };
 

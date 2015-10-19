@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Transform.h"
+#include "Animation.h"
 
 struct Joint
 {
@@ -39,14 +40,22 @@ private:
     std::vector<std::unique_ptr<Joint>> joints;
 
     /*Update screen coordinates of joints*/
-    void updateScreenCoord();
-    
+	void updateScreenCoord();
+
 public:
     /*True if the skeleton has a joint selected*/
     bool hasJointSelected;   
-	Skeleton() :
-		hasJointSelected{ false }
-	{};
+
+	Animation animation;
+
+	int currentFrameIdx;
+
+	Skeleton()
+		: hasJointSelected{ false }
+		, currentFrameIdx{ 0 }
+	{
+		animation.keyframes.push_back(AnimationKeyFrame());
+	};
     /*
      * Load Skeleton file
      */

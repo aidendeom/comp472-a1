@@ -12,5 +12,5 @@ AnimationKeyFrame::~AnimationKeyFrame()
 
 auto AnimationKeyFrame::capture(const std::vector<Joint>& joints) -> void
 {
-	throw "Not yet implemtented";
+	throw "Not yet implemented";
 }

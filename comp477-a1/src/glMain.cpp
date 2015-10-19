@@ -19,6 +19,9 @@
 
 using namespace std;
 
+// Function declarations
+auto nextKeyFrameEdit() -> void;
+auto prevKeyFrameEdit() -> void;
 
 //Create Mesh
 DefMesh myDefMesh;
@@ -323,6 +326,7 @@ void timerFunction(int value)
 void handleKeyPress(unsigned char key, int x, int y)
 { 
 	int i{ 0 }; // have to init here, or compiler will complain
+	auto& skeleton = myDefMesh.mySkeleton;
     switch(key)
     {
 	case 'n':
@@ -332,6 +336,14 @@ void handleKeyPress(unsigned char key, int x, int y)
 		animationMode = static_cast<AnimationMode>(i);
 		cout << getAnimationModeString(animationMode) << " mode activated" << endl;
 		break;
+	case '=':
+		if (animationMode == AnimationMode::Edit)
+			nextKeyFrameEdit();
+		break;
+	case '-':
+		if (animationMode == AnimationMode::Edit)
+			prevKeyFrameEdit();
+		break;
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
@@ -340,6 +352,38 @@ void handleKeyPress(unsigned char key, int x, int y)
     }
 }
 
+auto nextKeyFrameEdit() -> void
+{
+	// Alias to the list of keyframes
+	auto& frames = myDefMesh.mySkeleton.animation.keyframes;
+	auto& idx = myDefMesh.mySkeleton.currentFrameIdx;
+
+	// It's at the last, add a new frame
+	if (idx == frames.size() - 1)
+	{
+		idx++;
+		cout << "Adding new key frame " << idx + 1 << endl;
+		auto frameCopy = frames.back();
+		frames.push_back(frameCopy);
+	}
+	else
+	{
+		idx++;
+		cout << "Frame " << idx + 1 << "/" << frames.size() << endl;
+	}
+}
+
+auto prevKeyFrameEdit() -> void
+{
+	auto& frames = myDefMesh.mySkeleton.animation.keyframes;
+	auto& idx = myDefMesh.mySkeleton.currentFrameIdx;
+
+	if (idx > 0)
+	{
+		idx--;
+		cout << "Frame " << idx + 1 << "/" << frames.size() << endl;
+	}
+}
 
 void mouseEvent(int button, int state, int x, int y)
 {
