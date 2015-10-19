@@ -15,7 +15,7 @@
 
 #include "skeleton.h"
 #include "defMesh.h"
-
+#include "AnimationMode.h"
 
 using namespace std;
 
@@ -54,6 +54,8 @@ bool _mouseRight = false;
 double _dragPosX = 0.0;
 double _dragPosY = 0.0;
 double _dragPosZ = 0.0;
+
+AnimationMode animationMode{AnimationMode::Edit};
 
 double vlen(double x, double y, double z)
 {
@@ -320,13 +322,21 @@ void timerFunction(int value)
 }
 void handleKeyPress(unsigned char key, int x, int y)
 { 
+	int i{ 0 }; // have to init here, or compiler will complain
     switch(key)
     {
-        case 'm':
-            meshModel = (meshModel+1)%3; break;
-		case 27: // ESC key
-        case 'q':
-            exit(0);
+	case 'n':
+		i = static_cast<int>(animationMode);
+		i++;
+		i = i % static_cast<int>(AnimationMode::Count);
+		animationMode = static_cast<AnimationMode>(i);
+		cout << getAnimationModeString(animationMode) << " mode activated" << endl;
+		break;
+	case 'm':
+		meshModel = (meshModel + 1) % 3; break;
+	case 27: // ESC key
+	case 'q':
+		exit(0);
     }
 }
 
@@ -460,7 +470,7 @@ void mouseMoveEvent(int x, int y)
     /*
      * Do joint jobs
      */
-    else    
+	else if (animationMode == AnimationMode::Edit)
     {
 		Joint* selectedJoint = myDefMesh.mySkeleton.getSelectedJoint();
 

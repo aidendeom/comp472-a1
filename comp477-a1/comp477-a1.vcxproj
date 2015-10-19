@@ -11,9 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
-    <ClInclude Include="AnimationKeyFrame.h" />
+    <ClInclude Include="src\Animation.h" />
+    <ClInclude Include="src\AnimationKeyFrame.h" />
     <ClInclude Include="src\aiden_utils.h" />
+    <ClInclude Include="src\AnimationMode.h" />
     <ClInclude Include="src\defMesh.h" />
     <ClInclude Include="src\glm.h" />
     <ClInclude Include="src\simpleMath.h" />
@@ -24,8 +25,8 @@
     <ClInclude Include="src\WeightFileReader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="AnimationKeyFrame.cpp" />
+    <ClCompile Include="src\Animation.cpp" />
+    <ClCompile Include="src\AnimationKeyFrame.cpp" />
     <ClCompile Include="src\aiden_utils.cpp" />
     <ClCompile Include="src\defMesh.cpp" />
     <ClCompile Include="src\glm.cpp" />

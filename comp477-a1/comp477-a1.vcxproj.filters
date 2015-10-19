@@ -48,10 +48,13 @@
     <ClInclude Include="src\WeightFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
+    <ClInclude Include="src\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AnimationKeyFrame.h">
+    <ClInclude Include="src\AnimationKeyFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AnimationMode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,10 +89,10 @@
     <ClCompile Include="src\aiden_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
+    <ClCompile Include="src\Animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationKeyFrame.cpp">
+    <ClCompile Include="src\AnimationKeyFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
