@@ -42,6 +42,7 @@
     <ProjectGuid>{D96E1573-4447-4F75-8312-99D3F5B948D2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>comp477a1</RootNamespace>
+    <ProjectName>comp477-assignment</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
