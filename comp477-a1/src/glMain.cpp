@@ -649,6 +649,12 @@ void display()
 
 auto displayInstructions() -> void
 {
+	cout << "=== INSTRUCTIONS ===" << endl
+		<< "=:     Increment current frame index" << endl
+		<< "-:     Decrement current frame index" << endl
+		<< "Enter: Capture current pose and save in current frame" << endl
+		<< "n:     Switch between Edit/Playback mode" << endl
+		<< "m:     Switch redering modes" << endl;
 	cout << "Starting in Edit Mode" << endl;
 }
 
