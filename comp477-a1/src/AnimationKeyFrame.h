@@ -4,7 +4,7 @@
 #include "vmath\vmath.h"
 #include "Quatf.h"
 
-struct Joint;
+class Skeleton;
 
 class AnimationKeyFrame
 {
@@ -14,6 +14,6 @@ public:
 	AnimationKeyFrame();
 	~AnimationKeyFrame();
 
-	auto capture(const std::vector<Joint>& joints) -> void;
+	auto capture(const Skeleton& skeleton) -> void;
 };
 

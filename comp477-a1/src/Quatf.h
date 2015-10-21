@@ -11,6 +11,7 @@ public:
 	Quatf();
 	Quatf(float w, float x, float y, float z);
 	Quatf(float w, const Vector3f& v);
+	Quatf(const Quatf& other);
 
 	auto rotatePoint(const Vector3f& p) const -> Vector3f;
 	auto rotatePoint(const Quatf& q) const -> Vector3f;
@@ -21,6 +22,7 @@ public:
 
 	auto mat4() const -> Matrix4f;
 
+	auto operator=(const Quatf& rhs) -> Quatf&;
 	auto operator*(const Quatf& rhs) const -> Quatf;
 	auto operator~() const -> Quatf;
 	auto operator/(float f) -> Quatf;

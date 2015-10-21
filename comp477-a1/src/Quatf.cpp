@@ -21,6 +21,11 @@ Quatf::Quatf(float w, const Vector3f& v)
 	, v{ v }
 { }
 
+Quatf::Quatf(const Quatf& other)
+	: w{ other.w }
+	, v{ other.v }
+{ }
+
 ///////////////////////////////////////
 //			PUBLIC METHODS
 ///////////////////////////////////////
@@ -94,6 +99,13 @@ auto Quatf::rotatePoint(const Quatf& q) const -> Vector3f
 	auto& rot = *this;
 	auto result = rot * q * ~rot;
 	return result.v;
+}
+
+auto Quatf::operator=(const Quatf& rhs) -> Quatf&
+{
+	w = rhs.w;
+	v = rhs.v;
+	return *this;
 }
 
 auto Quatf::operator*(const Quatf& rhs) const -> Quatf

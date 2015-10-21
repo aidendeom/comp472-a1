@@ -48,7 +48,7 @@ public:
 
 	Animation animation;
 
-	int currentFrameIdx;
+	size_t currentFrameIdx;
 
 	Skeleton()
 		: hasJointSelected{ false }
@@ -87,6 +87,8 @@ public:
 	const std::vector<std::unique_ptr<Joint>>* getJoints() const;
 
 	void resetDeltas() const;
+
+	auto setPose(const AnimationKeyFrame& frame) -> void;
 };
 
 #endif

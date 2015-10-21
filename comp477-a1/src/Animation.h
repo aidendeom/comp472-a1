@@ -3,8 +3,6 @@
 #include <vector>
 #include "AnimationKeyFrame.h"
 
-class Skeleton;
-
 class Animation
 {
 public:

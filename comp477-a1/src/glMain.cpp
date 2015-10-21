@@ -21,8 +21,12 @@
 using namespace std;
 
 // Function declarations
+auto displayInstructions() -> void;
 auto nextKeyFrameEdit() -> void;
 auto prevKeyFrameEdit() -> void;
+auto captureCurrentPose() -> void;
+auto nextKeyFramePlayback() -> void;
+auto prevKeyFramePlayback() -> void;
 
 //Create Mesh
 DefMesh myDefMesh;
@@ -327,7 +331,6 @@ void timerFunction(int value)
 void handleKeyPress(unsigned char key, int x, int y)
 { 
 	int i{ 0 }; // have to init here, or compiler will complain
-	auto& skeleton = myDefMesh.mySkeleton;
     switch(key)
     {
 	case 'n':
@@ -340,16 +343,27 @@ void handleKeyPress(unsigned char key, int x, int y)
 	case '=':
 		if (animationMode == AnimationMode::Edit)
 			nextKeyFrameEdit();
+		else if (animationMode == AnimationMode::Playback)
+			nextKeyFramePlayback();
 		break;
 	case '-':
 		if (animationMode == AnimationMode::Edit)
 			prevKeyFrameEdit();
+		else if (animationMode == AnimationMode::Playback)
+			prevKeyFramePlayback();
+		break;
+	case 13: // Enter key
+		if (animationMode == AnimationMode::Edit)
+			captureCurrentPose();
 		break;
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
 	case 'q':
 		exit(0);
+		break;
+	default:
+		cout << key << endl;
     }
 }
 
@@ -383,6 +397,44 @@ auto prevKeyFrameEdit() -> void
 	{
 		idx--;
 		cout << "Frame " << idx + 1 << "/" << frames.size() << endl;
+	}
+}
+
+auto captureCurrentPose() -> void
+{
+	auto& skel = myDefMesh.mySkeleton;
+	auto& anim = skel.animation;
+	auto& idx = skel.currentFrameIdx;
+
+	auto& frame = anim.keyframes[idx];
+	frame.capture(skel);
+
+	cout << (idx + 1) << "/" << anim.keyframes.size() << " captured" << endl;
+}
+
+auto nextKeyFramePlayback() -> void
+{
+	auto& frames = myDefMesh.mySkeleton.animation.keyframes;
+	auto& idx = myDefMesh.mySkeleton.currentFrameIdx;
+
+	if (idx < frames.size() - 1)
+	{
+		idx++;
+		auto& frame = frames[idx];
+		myDefMesh.mySkeleton.setPose(frame);
+	}
+}
+
+auto prevKeyFramePlayback() -> void
+{
+	auto& frames = myDefMesh.mySkeleton.animation.keyframes;
+	auto& idx = myDefMesh.mySkeleton.currentFrameIdx;
+
+	if (idx > 0)
+	{
+		idx--;
+		auto& frame = frames[idx];
+		myDefMesh.mySkeleton.setPose(frame);
 	}
 }
 
@@ -595,18 +647,10 @@ void display()
     glutSwapBuffers();
 }
 
-//#define _USE_MATH_DEFINES
-//#include <math.h>
-//
-//#define DEG2RADF(x) static_cast<float>(DEG2RAD(x))
-//
-//void pr(Quatf q)			{ cout << q << endl; }
-//void pr(Vector3f v)			{ cout << v << endl; }
-//void pr()					{ cout << endl; }
-//void pr(const char* str)	{ cout << str << endl; }
-//
-//typedef Vector3f v;
-//typedef Quatf q;
+auto displayInstructions() -> void
+{
+	cout << "Starting in Edit Mode" << endl;
+}
 
 int main(int argc, char **argv)
 {
@@ -625,7 +669,8 @@ int main(int argc, char **argv)
     glutKeyboardFunc(handleKeyPress);
     glutPassiveMotionFunc(mousePassiveFunc);
     
- 
+	displayInstructions();
+
     init();
     glutMainLoop();
     //delete something

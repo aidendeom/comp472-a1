@@ -1,4 +1,5 @@
 #include "skeleton.h"
+
 #include "splitstring.h"
 #include <cmath>
 #include <iostream>
@@ -212,4 +213,14 @@ void Skeleton::resetDeltas() const
 {
 	// Set the root, which recursively sets the children
 	joints[0]->setDelta(false);
+}
+
+auto Skeleton::setPose(const AnimationKeyFrame& frame) -> void
+{
+	auto& rots = frame.orientations;
+
+	for (size_t i = 0; i < rots.size(); i++)
+	{
+		joints[i]->transform.setLocalRotation(rots[i]);
+	}
 }
