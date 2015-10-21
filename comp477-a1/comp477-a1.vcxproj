@@ -17,6 +17,7 @@
     <ClInclude Include="src\AnimationMode.h" />
     <ClInclude Include="src\defMesh.h" />
     <ClInclude Include="src\glm.h" />
+    <ClInclude Include="src\Quatf.h" />
     <ClInclude Include="src\simpleMath.h" />
     <ClInclude Include="src\skeleton.h" />
     <ClInclude Include="src\splitstring.h" />
@@ -31,6 +32,7 @@
     <ClCompile Include="src\defMesh.cpp" />
     <ClCompile Include="src\glm.cpp" />
     <ClCompile Include="src\glMain.cpp" />
+    <ClCompile Include="src\Quatf.cpp" />
     <ClCompile Include="src\simpleMath.cpp" />
     <ClCompile Include="src\skeleton.cpp" />
     <ClCompile Include="src\splitstring.cpp" />

@@ -166,7 +166,7 @@ auto Transform::getMatrix() const -> Matrix4f
 
 	auto toParentNeg = Matrix4f::createTranslation(-parentPos.x, -parentPos.y, -parentPos.z);
 	auto toParent = Matrix4f::createTranslation(parentPos.x, parentPos.y, parentPos.z);
-	auto rot = localRotation.transform();
+	auto rot = localRotation.mat4();
 
 	return toParent * rot * toParentNeg * parentMat;
 }

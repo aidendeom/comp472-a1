@@ -3579,7 +3579,7 @@ public:
 
 };
 
-typedef Quaternion<float> Quatf;
+//typedef Quaternion<float> Quatf;
 typedef Quaternion<double> Quatd;
 
 #ifdef VMATH_NAMESPACE

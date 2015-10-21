@@ -16,6 +16,7 @@
 #include "skeleton.h"
 #include "defMesh.h"
 #include "AnimationMode.h"
+#include "Quatf.h"
 
 using namespace std;
 
@@ -532,7 +533,7 @@ void mouseMoveEvent(int x, int y)
 
 		float angle = getAngle(v1, v2);
 
-		Quatf rot = Quatf::fromAxisRot(getEyeDirection(), angle);
+		Quatf rot = Quatf::angleAxis(angle, getEyeDirection());
 
 		auto newRot = rot * j.transform.getLocalRotation();
 

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "vmath/vmath.h"
+#include "Quatf.h"
 
 struct Joint;
 
