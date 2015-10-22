@@ -224,3 +224,32 @@ auto Skeleton::setPose(const AnimationKeyFrame& frame) -> void
 		joints[i]->transform.setLocalRotation(rots[i]);
 	}
 }
+
+auto Skeleton::updateAnimation(float delta) -> void
+{
+	if (from == nullptr || to == nullptr)
+		return;
+
+	auto& fromFrame = *from;
+	auto& toFrame = *to;
+
+	time += delta;
+	float t = time / duration;
+
+	for (size_t i = 0; i < toFrame.orientations.size(); i++)
+	{
+		auto& fromRot = fromFrame.orientations[i];
+		auto& toRot = toFrame.orientations[i];
+
+		auto rot = Quatf::lerp(fromRot, toRot, t);
+
+		joints[i]->transform.setLocalRotation(rot);
+	}
+
+	if (t >= 1.0f)
+	{
+		from = nullptr;
+		to = nullptr;
+		time = 0.0f;
+	}
+}

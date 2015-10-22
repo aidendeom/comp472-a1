@@ -47,12 +47,19 @@ public:
     bool hasJointSelected;   
 
 	Animation animation;
-
 	size_t currentFrameIdx;
+	bool isAnimating;
+
+	AnimationKeyFrame* from;
+	AnimationKeyFrame* to;
+
+	float time;
+	float duration;
 
 	Skeleton()
 		: hasJointSelected{ false }
 		, currentFrameIdx{ 0 }
+		, isAnimating{ false }
 	{
 		animation.keyframes.push_back(AnimationKeyFrame());
 	};
@@ -89,6 +96,8 @@ public:
 	void resetDeltas() const;
 
 	auto setPose(const AnimationKeyFrame& frame) -> void;
+
+	auto updateAnimation(float delta) -> void;
 };
 
 #endif

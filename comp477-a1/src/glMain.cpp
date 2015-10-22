@@ -12,6 +12,7 @@
 #include <cmath>
 #include <cstring>
 #include <csignal>
+#include <chrono>
 
 #include "skeleton.h"
 #include "defMesh.h"
@@ -419,9 +420,11 @@ auto nextKeyFramePlayback() -> void
 
 	if (idx < frames.size() - 1)
 	{
+		auto& skel = myDefMesh.mySkeleton;
+		skel.from = &frames[idx];
 		idx++;
-		auto& frame = frames[idx];
-		myDefMesh.mySkeleton.setPose(frame);
+		skel.to = &frames[idx];
+		skel.duration = 1.0f;
 	}
 }
 
@@ -432,9 +435,11 @@ auto prevKeyFramePlayback() -> void
 
 	if (idx > 0)
 	{
+		auto& skel = myDefMesh.mySkeleton;
+		skel.from = &frames[idx];
 		idx--;
-		auto& frame = frames[idx];
-		myDefMesh.mySkeleton.setPose(frame);
+		skel.to = &frames[idx];
+		skel.duration = 1.0f;
 	}
 }
 
@@ -591,14 +596,30 @@ void mouseMoveEvent(int x, int y)
 
 		// Set the delta for this frame
 		//j.delta.setLocalRotation(rot);
-		j.setDelta(true);
+		//j.setDelta(true);
 
 		j.transform.setLocalRotation(newRot);
     }
 }
 
+// Timer stuff
+using fast_clock = std::chrono::high_resolution_clock;
+using time_unit = std::chrono::milliseconds;
+
+auto t1 = fast_clock::now();
+auto t2 = t1;
+
 void display()
 {
+	auto diff = t2 - t1;
+	auto delta = std::chrono::duration_cast<time_unit>(diff).count();
+
+	auto deltaSeconds = delta / 1000.0f;
+
+	t1 = fast_clock::now();
+
+	myDefMesh.mySkeleton.updateAnimation(deltaSeconds);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
@@ -645,6 +666,8 @@ void display()
 	glEnd();
 
     glutSwapBuffers();
+
+	t2 = fast_clock::now();
 }
 
 auto displayInstructions() -> void

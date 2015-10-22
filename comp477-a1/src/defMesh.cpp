@@ -76,8 +76,8 @@ void DefMesh::updateTransMats()
 	{
 		auto& bone = *joints[b].get();
 
-		if (!bone.hasDelta)
-			continue;
+		//if (!bone.hasDelta)
+		//	continue;
 
 		transMats[b - 1] = bone.transform.getMatrix();
 	}

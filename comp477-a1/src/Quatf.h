@@ -29,6 +29,8 @@ public:
 
 	static auto angleAxis(float angleDeg, float x, float y, float z) -> Quatf;
 	static auto angleAxis(float angleDeg, Vector3f axis) -> Quatf;
+
+	static auto lerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
 };
 
 auto operator*(float f, const Quatf& q) -> Quatf;

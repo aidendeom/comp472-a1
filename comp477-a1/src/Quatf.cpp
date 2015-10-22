@@ -144,6 +144,15 @@ auto Quatf::angleAxis(float angleDeg, Vector3f axis) -> Quatf
 	return Quatf{ ca2, axis * sa2 };
 }
 
+auto Quatf::lerp(const Quatf& from, const Quatf& to, float t) -> Quatf
+{
+	t = std::max(0.0f, std::min(t, 1.0f));
+
+	float t2 = 1 - t;
+
+	return Quatf{ from.w * t2 + to.w * t, from.v * t2 + to.v * t };
+}
+
 ///////////////////////////////////////
 //		NON-MEMBER FUNCTIONS
 ///////////////////////////////////////
