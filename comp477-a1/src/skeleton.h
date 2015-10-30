@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <functional>
 
 #include "Transform.h"
 #include "Animation.h"
@@ -56,10 +57,13 @@ public:
 	float time;
 	float duration;
 
+	std::function<Quatf(const Quatf&, const Quatf&, float t)>  interpFunction;
+
 	Skeleton()
 		: hasJointSelected{ false }
 		, currentFrameIdx{ 0 }
 		, isAnimating{ false }
+		, interpFunction{Quatf::slerp}
 	{
 		animation.keyframes.push_back(AnimationKeyFrame());
 	};

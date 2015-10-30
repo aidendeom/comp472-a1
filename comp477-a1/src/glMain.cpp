@@ -13,6 +13,7 @@
 #include <cstring>
 #include <csignal>
 #include <chrono>
+#include <functional>
 
 #include "skeleton.h"
 #include "defMesh.h"
@@ -28,6 +29,16 @@ auto prevKeyFrameEdit() -> void;
 auto captureCurrentPose() -> void;
 auto nextKeyFramePlayback() -> void;
 auto prevKeyFramePlayback() -> void;
+auto chooseInterpFunction(char c) -> void;
+auto matLerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
+auto increaseSpeed() -> void;
+auto decreaseSpeed() -> void;
+auto clampSpeed() -> void;
+
+float animDuration = 1.0f;
+float durationDelta = 0.25f;
+float durationMin = 0.1f;
+float durationMax = 5.0f;
 
 //Create Mesh
 DefMesh myDefMesh;
@@ -357,6 +368,18 @@ void handleKeyPress(unsigned char key, int x, int y)
 		if (animationMode == AnimationMode::Edit)
 			captureCurrentPose();
 		break;
+	case 'j':
+		increaseSpeed();
+		break;
+	case 'k':
+		decreaseSpeed();
+		break;
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+		chooseInterpFunction(key);
+		break;
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
@@ -424,7 +447,8 @@ auto nextKeyFramePlayback() -> void
 		skel.from = &frames[idx];
 		idx++;
 		skel.to = &frames[idx];
-		skel.duration = 1.0f;
+		skel.time = 0;
+		skel.duration = animDuration;
 	}
 }
 
@@ -439,8 +463,65 @@ auto prevKeyFramePlayback() -> void
 		skel.from = &frames[idx];
 		idx--;
 		skel.to = &frames[idx];
-		skel.duration = 1.0f;
+		skel.time = 0;
+		skel.duration = animDuration;
 	}
+}
+
+auto increaseSpeed() -> void
+{
+	animDuration -= durationDelta;
+	clampSpeed();
+}
+
+auto decreaseSpeed() -> void
+{
+	animDuration += durationDelta;
+	clampSpeed();
+}
+
+auto clampSpeed() -> void
+{
+	animDuration = max(durationMin, min(animDuration, durationMax));
+	cout << "Duration is now " << animDuration << endl;
+}
+
+auto chooseInterpFunction(char c) -> void
+{
+	auto& f = myDefMesh.mySkeleton.interpFunction;
+	string msg;
+	switch (c)
+	{
+	case '1':
+		msg = "Using matrix lerp";
+		f = matLerp;
+		break;
+	case '2':
+		msg = "Using euler angle lerp (not implemented yet)";
+		break;
+	case '3':
+		f = Quatf::lerp;
+		msg = "Using lerp";
+		break;
+	case '4':
+		f = Quatf::slerp;
+		msg = "Using slerp";
+		break;
+	}
+
+	cout << msg << endl;
+}
+
+auto matLerp(const Quatf& from, const Quatf& to, float t) -> Quatf
+{
+	t = max(0.0f, min(t, 1.0f));
+	float t2 = 1 - t;
+
+	const auto mf = from.mat4();
+	const auto mt = to.mat4();
+
+	auto res = mf * t2 + mt * t;
+	return Quatf{ res };
 }
 
 void mouseEvent(int button, int state, int x, int y)
@@ -453,8 +534,10 @@ void mouseEvent(int button, int state, int x, int y)
     if (state == GLUT_UP)
 	switch (button) {
     case GLUT_LEFT_BUTTON:
+		if (myDefMesh.mySkeleton.hasJointSelected)
+			captureCurrentPose();
         myDefMesh.mySkeleton.release();
-            _mouseLeft =false;
+        _mouseLeft = false;
             break;
 	case GLUT_MIDDLE_BUTTON:
 	    _mouseMiddle = false;
@@ -677,8 +760,13 @@ auto displayInstructions() -> void
 		<< "-:     Decrement current frame index" << endl
 		<< "Enter: Capture current pose and save in current frame" << endl
 		<< "n:     Switch between Edit/Playback mode" << endl
-		<< "m:     Switch redering modes" << endl;
+		<< "m:     Switch redering modes" << endl
+		<< "1:     Use slerp" << endl
+		<< "2:     Use lerp" << endl
+		<< "3:     Use lerp with matrix" << endl
+		<< "4:     Use lerp with euler angles" << endl;
 	cout << "Starting in Edit Mode" << endl;
+	cout << "Starting with slerp" << endl;
 }
 
 int main(int argc, char **argv)

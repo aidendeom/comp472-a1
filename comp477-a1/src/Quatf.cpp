@@ -26,6 +26,19 @@ Quatf::Quatf(const Quatf& other)
 	, v{ other.v }
 { }
 
+Quatf::Quatf(const Matrix4f& mat)
+{
+#define m(x, y) mat.at(x, y)
+
+	w = std::sqrtf(1.0f + m(0, 0) + m(1, 1) + m(2, 2)) / 2.0f;
+	float w4 = w * 4.0f;
+	v.x = (m(2, 1) - m(1, 2)) / w4;
+	v.y = (m(0, 2) - m(2, 0)) / w4;
+	v.z = (m(1, 0) - m(0, 1)) / w4;
+
+#undef m
+}
+
 ///////////////////////////////////////
 //			PUBLIC METHODS
 ///////////////////////////////////////
@@ -151,6 +164,35 @@ auto Quatf::lerp(const Quatf& from, const Quatf& to, float t) -> Quatf
 	float t2 = 1 - t;
 
 	return Quatf{ from.w * t2 + to.w * t, from.v * t2 + to.v * t };
+}
+
+auto Quatf::slerp(const Quatf& from, const Quatf& to, float t) -> Quatf
+{
+	t = std::max(0.0f, std::min(t, 1.0f));
+
+	float t2 = 1 - t;
+
+	float cosOmega = from.w * to.w
+		+ from.v.x * to.v.x
+		+ from.v.y * to.v.y
+		+ from.v.z * to.v.z;
+
+	float omega = std::acosf(cosOmega);
+	float sinOmega = std::sinf(omega);
+
+	if (std::abs(sinOmega) < epsilon)
+		return from;
+
+	float fromCoef = std::sin(t2 * omega) / sinOmega;
+	float toCoef = std::sin(t * omega) / sinOmega;
+
+	Quatf res;
+	res.w = fromCoef * from.w + toCoef * to.w;
+	res.v.x = fromCoef * from.v.x + toCoef * to.v.x;
+	res.v.y = fromCoef * from.v.y + toCoef * to.v.y;
+	res.v.z = fromCoef * from.v.z + toCoef * to.v.z;
+
+	return res;
 }
 
 ///////////////////////////////////////

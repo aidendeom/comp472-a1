@@ -12,6 +12,7 @@ public:
 	Quatf(float w, float x, float y, float z);
 	Quatf(float w, const Vector3f& v);
 	Quatf(const Quatf& other);
+	Quatf(const Matrix4f& mat);
 
 	auto rotatePoint(const Vector3f& p) const -> Vector3f;
 	auto rotatePoint(const Quatf& q) const -> Vector3f;
@@ -31,6 +32,7 @@ public:
 	static auto angleAxis(float angleDeg, Vector3f axis) -> Quatf;
 
 	static auto lerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
+	static auto slerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
 };
 
 auto operator*(float f, const Quatf& q) -> Quatf;

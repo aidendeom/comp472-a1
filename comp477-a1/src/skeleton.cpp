@@ -238,10 +238,10 @@ auto Skeleton::updateAnimation(float delta) -> void
 
 	for (size_t i = 0; i < toFrame.orientations.size(); i++)
 	{
-		auto& fromRot = fromFrame.orientations[i];
-		auto& toRot = toFrame.orientations[i];
+		const auto& fromRot = fromFrame.orientations[i];
+		const auto& toRot = toFrame.orientations[i];
 
-		auto rot = Quatf::lerp(fromRot, toRot, t);
+		const auto rot = interpFunction(fromRot, toRot, t);
 
 		joints[i]->transform.setLocalRotation(rot);
 	}
