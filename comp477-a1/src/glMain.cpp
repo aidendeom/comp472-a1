@@ -31,6 +31,7 @@ auto nextKeyFramePlayback() -> void;
 auto prevKeyFramePlayback() -> void;
 auto chooseInterpFunction(char c) -> void;
 auto matLerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
+auto eurlerAngleLerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
 auto increaseSpeed() -> void;
 auto decreaseSpeed() -> void;
 auto clampSpeed() -> void;
@@ -497,7 +498,8 @@ auto chooseInterpFunction(char c) -> void
 		f = matLerp;
 		break;
 	case '2':
-		msg = "Using euler angle lerp (not implemented yet)";
+		msg = "Using euler angle lerp";
+		f = eurlerAngleLerp;
 		break;
 	case '3':
 		f = Quatf::lerp;
@@ -521,7 +523,19 @@ auto matLerp(const Quatf& from, const Quatf& to, float t) -> Quatf
 	const auto mt = to.mat4();
 
 	auto res = mf * t2 + mt * t;
-	return Quatf{ res };
+	return Quatf::fromMat4(res);
+}
+
+auto eurlerAngleLerp(const Quatf& from, const Quatf& to, float t) -> Quatf
+{
+	t = max(0.0f, min(t, 1.0f));
+	float t2 = 1 - t;
+
+	const auto ef = from.toEulerAngles();
+	const auto et = to.toEulerAngles();
+
+	auto res = ef * t2 + et * t;
+	return Quatf::fromEulerAngles(res);
 }
 
 void mouseEvent(int button, int state, int x, int y)

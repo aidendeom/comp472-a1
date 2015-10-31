@@ -26,19 +26,6 @@ Quatf::Quatf(const Quatf& other)
 	, v{ other.v }
 { }
 
-Quatf::Quatf(const Matrix4f& mat)
-{
-#define m(x, y) mat.at(x, y)
-
-	w = std::sqrtf(1.0f + m(0, 0) + m(1, 1) + m(2, 2)) / 2.0f;
-	float w4 = w * 4.0f;
-	v.x = (m(2, 1) - m(1, 2)) / w4;
-	v.y = (m(0, 2) - m(2, 0)) / w4;
-	v.z = (m(1, 0) - m(0, 1)) / w4;
-
-#undef m
-}
-
 ///////////////////////////////////////
 //			PUBLIC METHODS
 ///////////////////////////////////////
@@ -101,6 +88,17 @@ auto Quatf::mat4() const -> Matrix4f
 	return ret;
 }
 
+auto Quatf::toEulerAngles() const -> Vector3f
+{
+	Vector3f ret;
+
+	ret.x = std::atan2f(2 * (w * v.x + v.y * v.z), 1 - 2 * (v.x * v.x + v.y * v.y));
+	ret.y = std::asin(2 * (w * v.y - v.z * v.x));
+	ret.z = std::atan2f(2 * (w * v.z + v.x * v.y), 1 - 2 * (v.y * v.y + v.z * v.z));
+
+	return ret;
+}
+
 
 auto Quatf::rotatePoint(const Vector3f& p) const -> Vector3f
 {
@@ -138,7 +136,7 @@ auto Quatf::operator~() const -> Quatf
 	return Quatf{ w, -v };
 }
 
-auto Quatf::operator/(float f) -> Quatf
+auto Quatf::operator/(float f) const -> Quatf
 {
 	return Quatf{ w / f, v / f };
 }
@@ -155,6 +153,26 @@ auto Quatf::angleAxis(float angleDeg, Vector3f axis) -> Quatf
 	auto sa2 = std::sinf(angleRad / 2);
 	auto ca2 = std::cosf(angleRad / 2);
 	return Quatf{ ca2, axis * sa2 };
+}
+
+auto Quatf::fromMat4(const Matrix4f& mat) -> Quatf
+{
+#define m(x, y) mat.at(x, y)
+	Quatf ret;
+
+	ret.w = std::sqrtf(1.0f + m(0, 0) + m(1, 1) + m(2, 2)) / 2.0f;
+	float w4 =ret.w * 4.0f;
+	ret.v.x = (m(2, 1) - m(1, 2)) / w4;
+	ret.v.y = (m(0, 2) - m(2, 0)) / w4;
+	ret.v.z = (m(1, 0) - m(0, 1)) / w4;
+
+	return ret;
+#undef m
+}
+
+auto Quatf::fromEulerAngles(const Vector3f& e) -> Quatf
+{
+	throw "Not yet implemented";
 }
 
 auto Quatf::lerp(const Quatf& from, const Quatf& to, float t) -> Quatf
