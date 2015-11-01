@@ -96,6 +96,11 @@ auto Quatf::toEulerAngles() const -> Vector3f
 	ret.y = std::asin(2 * (w * v.y - v.z * v.x));
 	ret.z = std::atan2f(2 * (w * v.z + v.x * v.y), 1 - 2 * (v.y * v.y + v.z * v.z));
 
+	const float toDeg = 180.0f / static_cast<float>(M_PI);
+	ret.x *= toDeg;
+	ret.y *= toDeg;
+	ret.z *= toDeg;
+
 	return ret;
 }
 
@@ -172,7 +177,9 @@ auto Quatf::fromMat4(const Matrix4f& mat) -> Quatf
 
 auto Quatf::fromEulerAngles(const Vector3f& e) -> Quatf
 {
-	throw "Not yet implemented";
+	return angleAxis(e.x, { 1, 0, 0 })
+		* angleAxis(e.y, { 0, 1, 0 })
+		* angleAxis(e.z, { 0, 0, 1 });
 }
 
 auto Quatf::lerp(const Quatf& from, const Quatf& to, float t) -> Quatf
