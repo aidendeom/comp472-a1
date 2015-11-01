@@ -247,9 +247,12 @@ auto Skeleton::updateAnimation(float delta) -> void
 	}
 
 	if (t >= 1.0f)
-	{
-		from = nullptr;
-		to = nullptr;
-		time = 0.0f;
-	}
+		resetAnimParams();
+}
+
+auto Skeleton::resetAnimParams() -> void
+{
+	from = nullptr;
+	to = nullptr;
+	time = 0.0f;
 }

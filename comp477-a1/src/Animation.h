@@ -13,5 +13,7 @@ public:
 	~Animation() { };
 
 	auto saveToFile(std::string filename) -> void;
+	
+	static auto loadFromFile(std::string filename) -> Animation;
 };
 

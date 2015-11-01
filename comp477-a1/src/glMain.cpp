@@ -395,6 +395,7 @@ void handleKeyPress(unsigned char key, int x, int y)
 		break;
 	case 'l':
 		loadAnimation();
+		break;
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
@@ -423,6 +424,8 @@ auto nextKeyFrameEdit() -> void
 	else
 	{
 		idx++;
+		auto& f = frames[idx];
+		myDefMesh.mySkeleton.setPose(f);
 		cout << "Frame " << idx + 1 << "/" << frames.size() << endl;
 	}
 }
@@ -435,6 +438,8 @@ auto prevKeyFrameEdit() -> void
 	if (idx > 0)
 	{
 		idx--;
+		auto& f = frames[idx];
+		myDefMesh.mySkeleton.setPose(f);
 		cout << "Frame " << idx + 1 << "/" << frames.size() << endl;
 	}
 }
@@ -504,7 +509,7 @@ auto clampSpeed() -> void
 auto saveCurrentAnimation() -> void
 {
 	string filename;
-	cout << "== SAVE =="
+	cout << "== SAVE ==\n"
 		<< "Enter filename: ";
 	cin >> filename;
 	string filepath = ANIMATIONS_PATH + filename;
@@ -525,7 +530,30 @@ auto saveCurrentAnimation() -> void
 
 auto loadAnimation() -> void
 {
-	cout << "Not yet implemented" << endl;
+	string filename;
+	cout << "== LOAD ==\n"
+		<< "Enter filename: ";
+	cin >> filename;
+	string filepath = ANIMATIONS_PATH + filename;
+	wstring wfilepath{ begin(filepath), end(filepath) };
+	BOOL exists = PathFileExists(wfilepath.c_str());
+	while (!exists)
+	{
+		cout << "That file does not exists.\nEnter filename: ";
+		cin >> filename;
+		filepath = ANIMATIONS_PATH + filename;
+		wfilepath = wstring{ begin(filepath), end(filepath) };
+		exists = PathFileExists(wfilepath.c_str());
+	}
+
+	Animation anim = Animation::loadFromFile(filepath);
+	auto& skel = myDefMesh.mySkeleton;
+
+	skel.animation = anim;
+	skel.currentFrameIdx = 0;
+	skel.resetAnimParams();
+
+	cout << "Animation " << filename << " loaded successfully" << endl;
 }
 
 auto chooseInterpFunction(char c) -> void

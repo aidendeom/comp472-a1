@@ -4,6 +4,12 @@
 #include "vmath\vmath.h"
 
 ///////////////////////////////////////
+//			STATIC MEMBERS
+///////////////////////////////////////
+
+const Quatf Quatf::identity{ 1, 0, 0, 0 };
+
+///////////////////////////////////////
 //			CONSTRUCTORS
 ///////////////////////////////////////
 
@@ -238,4 +244,14 @@ auto operator<<(std::ostream& os, const Quatf& q) -> std::ostream&
 {
 	os << q.w << ' ' << q.v.x << ' ' << q.v.y << ' ' << q.v.z;
 	return os;
+}
+
+auto operator>>(std::istream& is, Quatf& q) -> std::istream&
+{
+	is >> q.w;
+	is >> q.v.x;
+	is >> q.v.y;
+	is >> q.v.z;
+
+	return is;
 }

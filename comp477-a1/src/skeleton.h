@@ -102,6 +102,8 @@ public:
 	auto setPose(const AnimationKeyFrame& frame) -> void;
 
 	auto updateAnimation(float delta) -> void;
+
+	auto resetAnimParams() -> void;
 };
 
 #endif
