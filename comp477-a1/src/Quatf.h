@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include "vmath\vmath.h"
 
 class Quatf
@@ -38,3 +39,4 @@ public:
 
 auto operator*(float f, const Quatf& q) -> Quatf;
 auto operator*(const Quatf& q, float f) -> Quatf;
+auto operator<<(std::ostream& os, const Quatf& q) -> std::ostream&;

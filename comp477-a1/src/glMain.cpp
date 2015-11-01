@@ -9,11 +9,15 @@
 #endif
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstring>
 #include <csignal>
 #include <chrono>
 #include <functional>
+#include <string>
+#include <Shlwapi.h>
+#include <Windows.h>
 
 #include "skeleton.h"
 #include "defMesh.h"
@@ -21,6 +25,12 @@
 #include "Quatf.h"
 
 using namespace std;
+
+// Constants
+const string ANIMATIONS_PATH{ "resources/animations/" };
+const float durationDelta = 0.25f;
+const float durationMin = 0.1f;
+const float durationMax = 5.0f;
 
 // Function declarations
 auto displayInstructions() -> void;
@@ -35,11 +45,10 @@ auto eurlerAngleLerp(const Quatf& from, const Quatf& to, float t) -> Quatf;
 auto increaseSpeed() -> void;
 auto decreaseSpeed() -> void;
 auto clampSpeed() -> void;
+auto saveCurrentAnimation() -> void;
+auto loadAnimation() -> void;
 
 float animDuration = 1.0f;
-float durationDelta = 0.25f;
-float durationMin = 0.1f;
-float durationMax = 5.0f;
 
 //Create Mesh
 DefMesh myDefMesh;
@@ -381,14 +390,19 @@ void handleKeyPress(unsigned char key, int x, int y)
 	case '4':
 		chooseInterpFunction(key);
 		break;
+	case 's':
+		saveCurrentAnimation();
+		break;
+	case 'l':
+		loadAnimation();
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
 	case 'q':
 		exit(0);
 		break;
-	default:
-		cout << key << endl;
+	//default:
+		//cout << key << endl;
     }
 }
 
@@ -485,6 +499,33 @@ auto clampSpeed() -> void
 {
 	animDuration = max(durationMin, min(animDuration, durationMax));
 	cout << "Duration is now " << animDuration << endl;
+}
+
+auto saveCurrentAnimation() -> void
+{
+	string filename;
+	cout << "== SAVE =="
+		<< "Enter filename: ";
+	cin >> filename;
+	string filepath = ANIMATIONS_PATH + filename;
+	wstring wfilepath{ begin(filepath), end(filepath) };
+	BOOL exists = PathFileExists(wfilepath.c_str());
+	while (exists)
+	{
+		cout << "That file already exists.\nChoose a different name: ";
+		cin >> filename;
+		filepath = ANIMATIONS_PATH + filename;
+		wfilepath = wstring{ begin(filepath), end(filepath) };
+		exists = PathFileExists(wfilepath.c_str());
+	}
+
+	myDefMesh.mySkeleton.animation.saveToFile(filepath);
+	cout << "Animation saved to " << filepath << endl;
+}
+
+auto loadAnimation() -> void
+{
+	cout << "Not yet implemented" << endl;
 }
 
 auto chooseInterpFunction(char c) -> void

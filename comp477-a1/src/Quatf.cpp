@@ -233,3 +233,9 @@ auto operator*(const Quatf& q, float f) -> Quatf
 {
 	return Quatf{ q.w * f, q.v * f };
 }
+
+auto operator<<(std::ostream& os, const Quatf& q) -> std::ostream&
+{
+	os << q.w << ' ' << q.v.x << ' ' << q.v.y << ' ' << q.v.z;
+	return os;
+}
