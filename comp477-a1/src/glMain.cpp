@@ -47,8 +47,15 @@ auto decreaseSpeed() -> void;
 auto clampSpeed() -> void;
 auto saveCurrentAnimation() -> void;
 auto loadAnimation() -> void;
+auto togglePlayAnimation() -> void;
+auto playAnimation() -> void;
+auto stopAnimation() -> void;
+auto updateCurrentFrame() -> void;
 
 float animDuration = 1.0f;
+bool playingAnimation = false;
+bool loopAnimation = false;
+AnimationMode animationMode{ AnimationMode::Edit };
 
 //Create Mesh
 DefMesh myDefMesh;
@@ -84,8 +91,6 @@ bool _mouseRight = false;
 double _dragPosX = 0.0;
 double _dragPosY = 0.0;
 double _dragPosZ = 0.0;
-
-AnimationMode animationMode{AnimationMode::Edit};
 
 double vlen(double x, double y, double z)
 {
@@ -396,6 +401,13 @@ void handleKeyPress(unsigned char key, int x, int y)
 	case 'l':
 		loadAnimation();
 		break;
+	case 'p':
+		togglePlayAnimation();
+		break;
+	case 'o':
+		loopAnimation = !loopAnimation;
+		cout << "Loop animation: " << (loopAnimation ? "true" : "false") << endl;
+		break;
 	case 'm':
 		meshModel = (meshModel + 1) % 3; break;
 	case 27: // ESC key
@@ -554,6 +566,54 @@ auto loadAnimation() -> void
 	skel.resetAnimParams();
 
 	cout << "Animation " << filename << " loaded successfully" << endl;
+}
+
+auto togglePlayAnimation() -> void
+{
+	if (animationMode != AnimationMode::Playback)
+		return;
+
+	if (!playingAnimation)
+		playAnimation();
+	else
+		stopAnimation();
+}
+
+auto playAnimation() -> void
+{
+	auto& skel = myDefMesh.mySkeleton;
+	skel.currentFrameIdx = 0;
+
+	playingAnimation = true;
+
+	cout << "Playing animation" << endl;
+}
+
+auto stopAnimation() -> void
+{
+	playingAnimation = false;
+
+	cout << "Stopping animation" << endl;
+}
+
+auto updateCurrentFrame() -> void
+{
+	if (!playingAnimation)
+		return;
+
+	auto& skel = myDefMesh.mySkeleton;
+
+	// It's time to play next frame
+	if (skel.from == nullptr && skel.to == nullptr)
+		nextKeyFramePlayback();
+
+	if (skel.currentFrameIdx >= skel.animation.keyframes.size() - 1)
+	{
+		if (loopAnimation)
+			playAnimation();
+		else
+			stopAnimation();
+	}
 }
 
 auto chooseInterpFunction(char c) -> void
@@ -784,6 +844,7 @@ void display()
 
 	t1 = fast_clock::now();
 
+	updateCurrentFrame();
 	myDefMesh.mySkeleton.updateAnimation(deltaSeconds);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -843,6 +904,8 @@ auto displayInstructions() -> void
 		<< "-:     Decrement current frame index" << endl
 		<< "Enter: Capture current pose and save in current frame" << endl
 		<< "n:     Switch between Edit/Playback mode" << endl
+		<< "p:     Play current animation" << endl
+		<< "o:     Allow animation to loop" << endl
 		<< "m:     Switch redering modes" << endl
 		<< "1:     Use slerp" << endl
 		<< "2:     Use lerp" << endl
