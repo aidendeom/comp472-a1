@@ -384,10 +384,10 @@ void handleKeyPress(unsigned char key, int x, int y)
 			captureCurrentPose();
 		break;
 	case 'j':
-		increaseSpeed();
+		decreaseSpeed();
 		break;
 	case 'k':
-		decreaseSpeed();
+		increaseSpeed();
 		break;
 	case '1':
 	case '2':
@@ -607,10 +607,21 @@ auto updateCurrentFrame() -> void
 	if (skel.from == nullptr && skel.to == nullptr)
 		nextKeyFramePlayback();
 
-	if (skel.currentFrameIdx >= skel.animation.keyframes.size() - 1)
+	if (skel.currentFrameIdx >= skel.animation.keyframes.size() - 1
+		&& skel.from == nullptr && skel.to == nullptr)
 	{
 		if (loopAnimation)
-			playAnimation();
+		{
+			auto& frames = skel.animation.keyframes;
+			auto& idx = skel.currentFrameIdx;
+
+			skel.from = &frames[idx];
+			idx = 0;
+			skel.to = &frames[idx];
+			skel.time = 0;
+			skel.duration = animDuration;
+			skel.currentFrameIdx = 0;
+		}
 		else
 			stopAnimation();
 	}
@@ -933,6 +944,31 @@ int main(int argc, char **argv)
     glutPassiveMotionFunc(mousePassiveFunc);
     
 	displayInstructions();
+
+	if (argc > 1)
+	{
+		cout << "Attempting to load animation argument" << endl;
+		char* arg1 = argv[0];
+		string filename{ arg1 };
+		string filepath = ANIMATIONS_PATH + filename;
+		wstring wfilepath{ begin(filepath), end(filepath) };
+		BOOL exists = PathFileExists(wfilepath.c_str());
+		if (!exists)
+		{
+			Animation anim = Animation::loadFromFile(filepath);
+			auto& skel = myDefMesh.mySkeleton;
+
+			skel.animation = anim;
+			skel.currentFrameIdx = 0;
+			skel.resetAnimParams();
+
+			cout << "Animation " << filename << " loaded successfully" << endl;
+		}
+		else
+		{
+			cout << "Tried running with load command on file that does not exist" << endl;
+		}
+	}
 
     init();
     glutMainLoop();

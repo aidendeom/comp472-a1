@@ -211,7 +211,7 @@ auto Quatf::slerp(const Quatf& from, const Quatf& to, float t) -> Quatf
 	float omega = std::acosf(cosOmega);
 	float sinOmega = std::sinf(omega);
 
-	if (std::abs(sinOmega) < epsilon)
+	if (std::abs(sinOmega) < epsilon || !std::isfinite(sinOmega))
 		return from;
 
 	float fromCoef = std::sin(t2 * omega) / sinOmega;
